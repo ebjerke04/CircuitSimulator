@@ -31,7 +31,6 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const fl
 	ImGui::SetCursorPos(voltageSourcePosInLocalWindowSpace);
 	std::string id = "VoltageSource" + std::to_string(m_ComponentID);
 	ImGui::InvisibleButton(id.c_str(), ImVec2(gridSize * zoom * 4.0f, gridSize * zoom * 4.0f));
-	std::cout << (id) << std::endl;
 
 	id = "VoltageSourceContextMenu" + std::to_string(m_ComponentID);
 	if (ImGui::BeginPopupContextItem(id.c_str())) {
