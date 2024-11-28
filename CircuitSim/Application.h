@@ -1,13 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
-#include "VoltageSource.h"
+
+#include "VoltageSource_DC.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
 
-#include <memory>
-#include <vector>
 #include <string>
+
+#include "Circuit.h"
 
 class Application {
 public:
@@ -21,12 +22,15 @@ private:
     void drawMenuBar();
     void drawViewCustomizer();
     void drawCircuitCanvas();
+    void drawCircuit();
 
     void drawImGui();
     void cleanup();
 
     GLFWwindow* m_Window;
     ImFont* m_MainFont;
+
+    Circuit circuit;
 
     float m_Zoom = 1.0f;
     float m_GridSize = 10.0f;

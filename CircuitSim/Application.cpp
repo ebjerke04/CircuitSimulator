@@ -34,6 +34,9 @@ Application::Application() : m_Window(nullptr)
 
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
+
+    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f)));
+    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f)));
 }
 
 Application::~Application() 
@@ -121,19 +124,6 @@ void Application::drawViewCustomizer()
 
 void Application::drawCircuitCanvas()
 {
-    ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y - ImGui::GetFrameHeight()));
-
-    ImGui::Begin("Canvas", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoScrollWithMouse |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoBringToFrontOnFocus);
-
     // Get canvas position and size
     ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // Top-left corner of the canvas
     ImVec2 canvas_size = ImGui::GetContentRegionAvail(); // Size of the canvas
@@ -142,7 +132,7 @@ void Application::drawCircuitCanvas()
     ImVec2 mouse_pos = ImGui::GetMousePos();
     ImVec2 canvas_mouse_pos = ImVec2(mouse_pos.x - canvas_pos.x, mouse_pos.y - canvas_pos.y);
 
-    // Draw grey background
+    // Draw background
     draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(m_CanvasColor));
 
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
@@ -161,19 +151,16 @@ void Application::drawCircuitCanvas()
     {
         draw_list->AddLine(ImVec2(canvas_pos.x, canvas_pos.y + y), ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + y), ImColor(m_GridColor));
     }
+}
 
+void Application::drawCircuit()
+{
+    ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // Top-left corner of the canvas
+    ImVec2 canvas_size = ImGui::GetContentRegionAvail(); // Size of the canvas
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-    VoltageSource voltage_source = VoltageSource(ImVec2(20.0f, 20.0f));
-    voltage_source.Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
-    VoltageSource voltage_source2 = VoltageSource(ImVec2(10.0f, 10.0f));
-    voltage_source2.Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
-
-    ImGui::End();
-
-    ImGui::Begin("Actual position");
-    ImGui::Text("X: %f", m_xOffset);
-    ImGui::Text("Y: %f", m_yOffset);
-    ImGui::End();
+    for (const std::unique_ptr<Component>& component : circuit.GetComponents())
+        component->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
 }
 
 void Application::drawImGui() 
@@ -192,7 +179,23 @@ void Application::drawImGui()
         }
     }
 
+    ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y - ImGui::GetFrameHeight()));
+
+    ImGui::Begin("Canvas", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoScrollWithMouse |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoBringToFrontOnFocus);
+
     drawCircuitCanvas();
+    drawCircuit();
+
+    ImGui::End();
 }
 
 void Application::cleanup() 

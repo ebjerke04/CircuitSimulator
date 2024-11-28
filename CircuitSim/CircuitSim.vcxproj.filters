@@ -48,7 +48,10 @@
     <ClCompile Include="Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VoltageSource.cpp">
+    <ClCompile Include="VoltageSource_DC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Circuit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -97,7 +100,10 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VoltageSource.h">
+    <ClInclude Include="VoltageSource_DC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Circuit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

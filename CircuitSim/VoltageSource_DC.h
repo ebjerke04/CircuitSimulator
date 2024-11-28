@@ -2,12 +2,14 @@
 #include "Component.h"
 #include "Application.h"
 
-class VoltageSource :
+class VoltageSource_DC :
     public Component
 {
 public:
-    VoltageSource(ImVec2 gridPositon);
+    VoltageSource_DC(ImVec2 gridPositon);
 
     void Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom) override;
+private:
+    float m_Voltage = 5.0f;
 };
 
