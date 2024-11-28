@@ -16,7 +16,7 @@ Application::Application() : m_Window(nullptr)
     }
 
     // Create GLFW window
-    m_Window = glfwCreateWindow(1280, 720, "ImGui + GLFW", nullptr, nullptr);
+    m_Window = glfwCreateWindow(1280, 720, "Circuit Simulator", nullptr, nullptr);
     if (!m_Window) 
     {
         glfwTerminate();
