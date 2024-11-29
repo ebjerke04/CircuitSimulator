@@ -112,6 +112,9 @@
     <ClInclude Include="Terminal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="math_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt">

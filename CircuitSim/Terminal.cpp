@@ -12,7 +12,6 @@ void Terminal::Draw(ImDrawList* drawList, const ImVec2& posOnCanvas, const float
 	drawList->AddCircleFilled(posOnCanvas, radius, IM_COL32(255, 0, 0, 255));
 }
 
-int count = 0;
 bool Terminal::IsHovered(const ImVec2& offset, const float& gridSize, const float& zoom)
 {
 	ImVec2 terminal_canvas_pos = Component::GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
