@@ -14,8 +14,8 @@ public:
 	void SetID(int id) { m_ComponentID = id; }
 
 	const std::vector<std::unique_ptr<Terminal>>& GetTerminals() const{ return m_Terminals; }
+	static ImVec2 GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, const float& gridSize, const float& zoom);
 protected:
-	ImVec2 GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, const float& gridSize, const float& zoom);
 
 	ImVec2 m_GridPosition;
 	int m_ComponentID = 0;

@@ -31,14 +31,14 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const fl
 
 	for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
 	{
-		if (terminal->IsHovered())
+		if (terminal->IsHovered(offset, gridSize, zoom))
 		{
-			ImVec2 grid_pos_difference = ImVec2(m_GridPosition.x - terminal->GetGridPosition().x, m_GridPosition.y - terminal->GetGridPosition().y);
-			ImVec2 terminal_pos_on_canvas = GridPosToCanvasPos(ImVec2(m_GridPosition.x + grid_pos_difference.x, m_GridPosition.y + grid_pos_difference.y), offset, gridSize, zoom);
-			
+			ImVec2 terminal_pos_on_canvas = GridPosToCanvasPos(terminal->GetGridPosition(), offset, gridSize, zoom);
 			terminal->Draw(drawList, terminal_pos_on_canvas, 5.0f);
 		}
 	}
+
+	ImVec2 toReset = ImGui::GetCursorPos();
 
 	ImGui::SetCursorPos(voltageSourcePosInLocalWindowSpace);
 	std::string id = "VoltageSource" + std::to_string(m_ComponentID);
@@ -52,4 +52,6 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const fl
 		ImGui::SliderFloat("Voltage", &m_Voltage, 0.0f, 20.0f, "%.1f V");
 		ImGui::EndPopup();
 	}
+
+	ImGui::SetCursorPos(toReset);
 }
