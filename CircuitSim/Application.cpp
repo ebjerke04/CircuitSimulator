@@ -36,8 +36,6 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplOpenGL3_Init("#version 130");
 
     circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f)));
-    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f)));
-    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(60.0f, 60.0f)));
 }
 
 Application::~Application() 
@@ -93,6 +91,18 @@ void Application::drawMenuBar()
             if (ImGui::MenuItem("Customize View"))
             {
                 m_DrawViewCustomizer = true;
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Components"))
+        {
+            if (ImGui::BeginMenu("Sources"))
+            {
+                if (ImGui::MenuItem("DC Voltage Source"))
+                {
+                    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f)));
+                }
+                ImGui::EndMenu();
             }
             ImGui::EndMenu();
         }
