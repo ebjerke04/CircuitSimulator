@@ -20,7 +20,7 @@ private:
     void drawMenuBar();
     void drawViewCustomizer();
     void drawCircuitCanvas();
-    void drawCircuit();
+    void drawAndHandleCircuit();
 
     void drawImGui();
     void cleanup();

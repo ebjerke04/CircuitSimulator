@@ -7,6 +7,33 @@ VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition) : Component(gridPosition
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
 }
 
+void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom)
+{
+	ImVec2 pos_on_canvas = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
+
+	ImVec2 window_pos = ImGui::GetWindowPos(); // Get the top-left corner of the window
+	ImVec2 voltageSourcePosInLocalWindowSpace = ImVec2(
+		pos_on_canvas.x - window_pos.x - (gridSize * zoom * 2.0f),
+		pos_on_canvas.y - window_pos.y - (gridSize * zoom * 2.0f)
+	);
+
+	ImVec2 toReset = ImGui::GetCursorPos();
+	ImGui::SetCursorPos(voltageSourcePosInLocalWindowSpace);
+	std::string id = "VoltageSource" + std::to_string(m_ComponentID);
+	ImGui::InvisibleButton(id.c_str(), ImVec2(gridSize * zoom * 4.0f, gridSize * zoom * 4.0f));
+
+	id = "VoltageSourceContextMenu" + std::to_string(m_ComponentID);
+	if (ImGui::BeginPopupContextItem(id.c_str())) {
+		ImGui::Text("Edit Voltage Source");
+		ImGui::Separator();
+
+		ImGui::SliderFloat("Voltage", &m_Voltage, 0.0f, 20.0f, "%.1f V");
+		ImGui::EndPopup();
+	}
+
+	ImGui::SetCursorPos(toReset);
+}
+
 void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom)
 {
 	ImVec2 pos_on_canvas = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
@@ -51,26 +78,4 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const fl
 			terminal->Draw(drawList, terminal_pos_on_canvas, 5.0f);
 		}
 	}
-
-	ImVec2 window_pos = ImGui::GetWindowPos(); // Get the top-left corner of the window
-	ImVec2 voltageSourcePosInLocalWindowSpace = ImVec2(
-		pos_on_canvas.x - window_pos.x - (gridSize * zoom * 2.0f),
-		pos_on_canvas.y - window_pos.y - (gridSize * zoom * 2.0f)
-	);
-
-	ImVec2 toReset = ImGui::GetCursorPos();
-	ImGui::SetCursorPos(voltageSourcePosInLocalWindowSpace);
-	std::string id = "VoltageSource" + std::to_string(m_ComponentID);
-	ImGui::InvisibleButton(id.c_str(), ImVec2(gridSize * zoom * 4.0f, gridSize * zoom * 4.0f));
-
-	id = "VoltageSourceContextMenu" + std::to_string(m_ComponentID);
-	if (ImGui::BeginPopupContextItem(id.c_str())) {
-		ImGui::Text("Edit Voltage Source");
-		ImGui::Separator();
-
-		ImGui::SliderFloat("Voltage", &m_Voltage, 0.0f, 20.0f, "%.1f V");
-		ImGui::EndPopup();
-	}
-
-	ImGui::SetCursorPos(toReset);
 }

@@ -10,6 +10,7 @@ class Component
 public:
 	Component(ImVec2 gridPosition);
 
+	virtual void HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom) = 0;
 	virtual void Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom) = 0;
 	void SetID(int id) { m_ComponentID = id; }
 

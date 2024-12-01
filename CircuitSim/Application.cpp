@@ -164,14 +164,17 @@ void Application::drawCircuitCanvas()
     }
 }
 
-void Application::drawCircuit()
+void Application::drawAndHandleCircuit()
 {
     ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // Top-left corner of the canvas
     ImVec2 canvas_size = ImGui::GetContentRegionAvail(); // Size of the canvas
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
     for (const std::unique_ptr<Component>& component : circuit.GetComponents())
+    {
         component->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
+        component->HandleInput(ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
+    }
 }
 
 void Application::drawImGui() 
@@ -204,7 +207,7 @@ void Application::drawImGui()
         ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     drawCircuitCanvas();
-    drawCircuit();
+    drawAndHandleCircuit();
 
     ImGui::End();
 }
