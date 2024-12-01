@@ -94,6 +94,14 @@ void Application::drawMenuBar()
             }
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Move"))
+            {
+                m_OperationMode = MOVE;
+            }
+            ImGui::EndMenu();
+        }
         if (ImGui::BeginMenu("Components"))
         {
             if (ImGui::BeginMenu("Sources"))
@@ -173,7 +181,7 @@ void Application::drawAndHandleCircuit()
     for (const std::unique_ptr<Component>& component : circuit.GetComponents())
     {
         component->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
-        component->HandleInput(ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
+        component->HandleInput(ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom, m_OperationMode);
     }
 }
 

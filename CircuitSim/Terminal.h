@@ -2,7 +2,6 @@
 
 #include <string>
 #include "imgui/imgui.h"
-//#include "Component.h"
 
 class Terminal
 {

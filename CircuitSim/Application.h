@@ -8,6 +8,13 @@
 
 #include "Circuit.h"
 
+enum OpMode
+{
+    CONSTRUCT = 0,
+    MOVE = 1,
+    SIMULATE = 2
+};
+
 class Application {
 public:
     Application();
@@ -27,6 +34,7 @@ private:
 
     GLFWwindow* m_Window;
     ImFont* m_MainFont;
+    OpMode m_OperationMode = CONSTRUCT;
 
     Circuit circuit;
 

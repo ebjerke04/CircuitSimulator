@@ -7,7 +7,7 @@ VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition) : Component(gridPosition
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
 }
 
-void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom)
+void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom, const int& opMode)
 {
 	ImVec2 pos_on_canvas = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
 
@@ -16,6 +16,32 @@ void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, 
 		pos_on_canvas.x - window_pos.x - (gridSize * zoom * 2.0f),
 		pos_on_canvas.y - window_pos.y - (gridSize * zoom * 2.0f)
 	);
+
+	if (isHovered(offset, gridSize, zoom))
+	{
+		if (ImGui::IsMouseClicked(1))
+		{
+			if (opMode == OpMode::CONSTRUCT)
+			{
+				std::cout << "now editing" << std::endl;
+			}
+			else if (opMode == OpMode::MOVE)
+			{
+				std::cout << "now moving" << std::endl;
+			}
+		}
+	}
+
+	for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
+	{
+		if (terminal->IsHovered(offset, gridSize, zoom))
+		{
+			if (ImGui::IsMouseClicked(0))
+			{
+				// terminal clicked
+			}
+		}
+	}
 
 	ImVec2 toReset = ImGui::GetCursorPos();
 	ImGui::SetCursorPos(voltageSourcePosInLocalWindowSpace);
