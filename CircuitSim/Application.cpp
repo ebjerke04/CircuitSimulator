@@ -35,7 +35,7 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f)));
+    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1"));
 }
 
 Application::~Application() 
@@ -108,7 +108,7 @@ void Application::drawMenuBar()
             {
                 if (ImGui::MenuItem("DC Voltage Source"))
                 {
-                    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f)));
+                    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f), "V2"));
                 }
                 ImGui::EndMenu();
             }

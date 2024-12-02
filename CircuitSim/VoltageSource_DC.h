@@ -6,7 +6,7 @@ class VoltageSource_DC :
     public Component
 {
 public:
-    VoltageSource_DC(ImVec2 gridPositon);
+    VoltageSource_DC(ImVec2 gridPositon, const std::string& name);
 
     void HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom, const int& opMode);
     void Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom) override;

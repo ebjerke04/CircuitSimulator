@@ -1,8 +1,9 @@
 #include "Component.h"
 
-Component::Component(ImVec2 gridPosition)
+Component::Component(ImVec2 gridPosition, const std::string& name)
 {
 	m_GridPosition = gridPosition;
+	m_Name = name;
 }
 
 ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, const float& gridSize, const float& zoom)

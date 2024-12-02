@@ -1,7 +1,7 @@
 #include "VoltageSource_DC.h"
 #include "math_helper.h"
 
-VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition) : Component(gridPosition)
+VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition, const std::string& name) : Component(gridPosition, name)
 {
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y - 3)));
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
@@ -96,7 +96,8 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const fl
 
 void VoltageSource_DC::DrawEditMenu()
 {
-	ImGui::Begin("Edit Voltage Source", &m_DrawEditMenu);
+	std::string window_name = std::string("DC Voltage Source (").append(m_Name).append(")");
+	ImGui::Begin(window_name.c_str(), &m_DrawEditMenu);
 
 	ImGui::SliderFloat("Voltage", &m_Voltage, 0.0f, 20.0f, "%.1f V");
 
