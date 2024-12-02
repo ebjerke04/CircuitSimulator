@@ -24,12 +24,13 @@ public:
 private:
     static void error_callback(int error, const char* description);
 
+    void pollUserInput();
     void drawMenuBar();
     void drawViewCustomizer();
     void drawCircuitCanvas();
     void drawAndHandleCircuit();
 
-    void drawImGui();
+    void handleImGui();
     void cleanup();
 
     GLFWwindow* m_Window;

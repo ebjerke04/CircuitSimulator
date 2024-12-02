@@ -8,7 +8,7 @@
 class Component
 {
 public:
-	Component(ImVec2 gridPosition, const std::string& name);
+	Component(const ImVec2& gridPosition, const std::string& name);
 
 	virtual void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode) = 0;
 	virtual void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) = 0;

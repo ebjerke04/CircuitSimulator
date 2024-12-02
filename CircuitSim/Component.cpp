@@ -1,6 +1,6 @@
 #include "Component.h"
 
-Component::Component(ImVec2 gridPosition, const std::string& name)
+Component::Component(const ImVec2& gridPosition, const std::string& name)
 {
 	m_GridPosition = gridPosition;
 	m_Name = name;

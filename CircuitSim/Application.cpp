@@ -1,7 +1,8 @@
 #include "Application.h"
 
 template<typename T>
-inline T ImClamp(T v, T mn, T mx) {
+inline T ImClamp(T v, T mn, T mx) 
+{
     return (v < mn) ? mn : (v > mx) ? mx : v;
 }
 
@@ -11,7 +12,8 @@ Application::Application() : m_Window(nullptr)
     glfwSetErrorCallback(error_callback);
 
     // Initialize GLFW
-    if (!glfwInit()) {
+    if (!glfwInit()) 
+    {
         throw std::runtime_error("Failed to initialize GLFW");
     }
 
@@ -55,7 +57,7 @@ void Application::Begin()
         ImGui::NewFrame();
 
         // Render ImGui content
-        drawImGui();
+        handleImGui();
         
         // Rendering
         ImGui::Render();
@@ -67,6 +69,30 @@ void Application::Begin()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(m_Window);
+    }
+}
+
+void Application::pollUserInput()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.KeyCtrl) 
+    {
+        if (ImGui::IsKeyPressed(ImGuiKey_Equal)) 
+        { // Zoom in
+            m_Zoom = ImClamp(m_Zoom * 1.1f, 0.7f, 3.5f);
+        }
+        else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) 
+        { // Zoom out
+            m_Zoom = ImClamp(m_Zoom / 1.1f, 0.7f, 3.5f);
+        }
+    }
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+    {
+        if (m_OperationMode == OpMode::MOVE)
+        {
+            m_OperationMode = OpMode::CONSTRUCT;
+        }
     }
 }
 
@@ -122,6 +148,7 @@ void Application::drawMenuBar()
             }
             ImGui::EndMenu();
         }
+
         ImGui::EndMainMenuBar();
     }
 }
@@ -154,6 +181,12 @@ void Application::drawCircuitCanvas()
     // Draw background
     draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), ImColor(m_CanvasColor));
 
+    // Draw info to tell user that editor is in move mode.
+    if (m_OperationMode == OpMode::MOVE)
+    {
+        draw_list->AddText(Vec2Plus(canvas_pos, ImVec2(m_GridSize * m_Zoom, m_GridSize * m_Zoom)), IM_COL32(255, 0, 0, 255), "Move Components On - ESC to Exit");
+    }
+
     if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
     {
         ImVec2 drag_delta = ImGui::GetIO().MouseDelta;
@@ -185,21 +218,11 @@ void Application::drawAndHandleCircuit()
     }
 }
 
-void Application::drawImGui() 
+void Application::handleImGui() 
 {
-    // ImGui content
+    pollUserInput();
     drawMenuBar();
     drawViewCustomizer();
-
-    ImGuiIO& io = ImGui::GetIO();
-    if (io.KeyCtrl) {
-        if (ImGui::IsKeyPressed(ImGuiKey_Equal)) { // Ctrl + for zoom in
-            m_Zoom = ImClamp(m_Zoom * 1.1f, 0.7f, 3.5f); // Clamp zoom between 0.1 and 10.0
-        }
-        else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) { // Ctrl - for zoom out
-            m_Zoom = ImClamp(m_Zoom / 1.1f, 0.7f, 3.5f);
-        }
-    }
 
     ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y - ImGui::GetFrameHeight()));

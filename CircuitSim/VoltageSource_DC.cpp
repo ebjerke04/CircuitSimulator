@@ -1,7 +1,6 @@
 #include "VoltageSource_DC.h"
-#include "math_helper.h"
 
-VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition, const std::string& name) : Component(gridPosition, name)
+VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string& name) : Component(gridPosition, name)
 {
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y - 3)));
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
