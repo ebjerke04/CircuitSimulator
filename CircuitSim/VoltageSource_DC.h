@@ -8,8 +8,8 @@ class VoltageSource_DC :
 public:
     VoltageSource_DC(ImVec2 gridPositon, const std::string& name);
 
-    void HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom, const int& opMode);
-    void Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom) override;
+    void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode);
+    void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
 private:
     void DrawEditMenu();
 

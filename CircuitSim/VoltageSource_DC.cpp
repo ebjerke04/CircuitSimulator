@@ -7,7 +7,7 @@ VoltageSource_DC::VoltageSource_DC(ImVec2 gridPosition, const std::string& name)
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
 }
 
-void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, const float& zoom, const int& opMode)
+void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode)
 {
 	if (m_DrawEditMenu) DrawEditMenu();
 
@@ -48,7 +48,7 @@ void VoltageSource_DC::HandleInput(const ImVec2& offset, const float& gridSize, 
 	}
 }
 
-void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, const float& gridSize, const float& zoom)
+void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom)
 {
 	ImVec2 pos_on_canvas = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
 

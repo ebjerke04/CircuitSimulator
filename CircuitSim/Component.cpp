@@ -6,7 +6,7 @@ Component::Component(ImVec2 gridPosition, const std::string& name)
 	m_Name = name;
 }
 
-ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, const float& gridSize, const float& zoom)
+ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, float gridSize, float zoom)
 {
 	int min_grid_x = (offset.x > 0) ? floor(offset.x / gridSize / zoom) : ceil(offset.x / gridSize / zoom);
 	int min_grid_y = (offset.y > 0) ? floor(offset.y / gridSize / zoom) : ceil(offset.y / gridSize / zoom);
@@ -17,7 +17,7 @@ ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset
 	return ImVec2(offset_remainder_x + (gridPos.x + min_grid_x) * gridSize * zoom, offset_remainder_y + (gridPos.y + min_grid_y) * gridSize * zoom);
 }
 
-bool Component::isHovered(const ImVec2& offset, const float& gridSize, const float& zoom)
+bool Component::isHovered(const ImVec2& offset, float gridSize, float zoom)
 {
 	ImVec2 component_canvas_pos = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
 
