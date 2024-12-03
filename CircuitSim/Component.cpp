@@ -1,6 +1,7 @@
 #include "Component.h"
+#include "Application.h"
 
-Component::Component(const ImVec2& gridPosition, const std::string& name)
+Component::Component(const ImVec2& gridPosition, const std::string& name, const Circuit& circuit) : m_Circuit(circuit)
 {
 	m_GridPosition = gridPosition;
 	m_Name = name;
@@ -15,6 +16,13 @@ ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset
 	float offset_remainder_y = fmodf(offset.y, gridSize * zoom);
 
 	return ImVec2(offset_remainder_x + (gridPos.x + min_grid_x) * gridSize * zoom, offset_remainder_y + (gridPos.y + min_grid_y) * gridSize * zoom);
+}
+
+void Component::handleMoving(int opMode)
+{
+	if (opMode != OpMode::MOVE) m_Moving = false;
+
+	// TODO: IMPLEMENT MOVEMENT FUNCTIONALITY
 }
 
 bool Component::isHovered(const ImVec2& offset, float gridSize, float zoom)

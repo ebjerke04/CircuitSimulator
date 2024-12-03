@@ -1,6 +1,6 @@
 #include "VoltageSource_DC.h"
 
-VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string& name) : Component(gridPosition, name)
+VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string& name, const Circuit& circuit) : Component(gridPosition, name, circuit)
 {
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y - 3)));
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
@@ -8,16 +8,9 @@ VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string
 
 void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode)
 {
-	if (m_DrawEditMenu) DrawEditMenu();
-
-	ImVec2 pos_on_canvas = GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
-
-	ImVec2 window_pos = ImGui::GetWindowPos(); // Get the top-left corner of the window
-	ImVec2 voltageSourcePosInLocalWindowSpace = ImVec2(
-		pos_on_canvas.x - window_pos.x - (gridSize * zoom * 2.0f),
-		pos_on_canvas.y - window_pos.y - (gridSize * zoom * 2.0f)
-	);
-
+	if (opMode != OpMode::CONSTRUCT) m_DrawEditMenu = false;
+	if (m_DrawEditMenu) drawEditMenu();
+	
 	if (isHovered(offset, gridSize, zoom))
 	{
 		if (ImGui::IsMouseClicked(1))
@@ -34,6 +27,9 @@ void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float z
 			}
 		}
 	}
+
+	// TODO: START HANDLING MOVE FROM HERE... PARAMETERS FOR handleMoving() FUNCTION WILL CHANGE
+	handleMoving(opMode);
 
 	for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
 	{
@@ -93,7 +89,7 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, float gr
 	}
 }
 
-void VoltageSource_DC::DrawEditMenu()
+void VoltageSource_DC::drawEditMenu()
 {
 	std::string window_name = std::string("DC Voltage Source (").append(m_Name).append(")");
 	ImGui::Begin(window_name.c_str(), &m_DrawEditMenu);
