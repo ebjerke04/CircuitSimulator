@@ -2,8 +2,8 @@
 
 VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string& name, const Circuit& circuit) : Component(gridPosition, name, circuit)
 {
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y - 3)));
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(gridPosition.x, gridPosition.y + 3)));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "Positive"));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0,  3), "Ground"));
 }
 
 void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode)
@@ -20,24 +20,19 @@ void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float z
 				std::cout << "now editing" << std::endl;
 				m_DrawEditMenu = true;
 			}
-			else if (opMode == OpMode::MOVE)
-			{
-				std::cout << "now moving" << std::endl;
-				m_DrawEditMenu = false;
-			}
 		}
 	}
 
 	// TODO: START HANDLING MOVE FROM HERE... PARAMETERS FOR handleMoving() FUNCTION WILL CHANGE
-	handleMoving(opMode);
+	handleMoving(offset, gridSize, zoom, opMode);
 
 	for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
 	{
-		if (terminal->IsHovered(offset, gridSize, zoom))
+		if (terminal->IsHovered(m_GridPosition, offset, gridSize, zoom))
 		{
 			if (ImGui::IsMouseClicked(0))
 			{
-				// terminal clicked
+				std::cout << "Terminal clicked: " << terminal->GetName() << std::endl;
 			}
 		}
 	}
@@ -81,9 +76,9 @@ void VoltageSource_DC::Draw(ImDrawList* drawList, const ImVec2& offset, float gr
 
 	for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
 	{
-		if (terminal->IsHovered(offset, gridSize, zoom))
+		if (terminal->IsHovered(m_GridPosition, offset, gridSize, zoom))
 		{
-			ImVec2 terminal_pos_on_canvas = GridPosToCanvasPos(terminal->GetGridPosition(), offset, gridSize, zoom);
+			ImVec2 terminal_pos_on_canvas = GridPosToCanvasPos(Vec2Plus(m_GridPosition, terminal->GetDeltaGridPosition()), offset, gridSize, zoom);
 			terminal->Draw(drawList, terminal_pos_on_canvas, 5.0f);
 		}
 	}

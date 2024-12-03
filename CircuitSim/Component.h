@@ -21,7 +21,7 @@ public:
 protected:
 	virtual void drawEditMenu() = 0;
 
-	void handleMoving(int opMode);
+	void handleMoving(const ImVec2& offset, float gridSize, float zoom, int opMode);
 	bool isHovered(const ImVec2& offset, float gridSize, float zoom);
 
 	ImVec2 m_GridPosition;

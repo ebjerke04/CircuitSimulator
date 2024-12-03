@@ -187,7 +187,7 @@ void Application::drawCircuitCanvas()
         draw_list->AddText(Vec2Plus(canvas_pos, ImVec2(m_GridSize * m_Zoom, m_GridSize * m_Zoom)), IM_COL32(255, 0, 0, 255), "Move Components On - ESC to Exit");
     }
 
-    if (ImGui::IsMouseDragging(ImGuiMouseButton_Right))
+    if (ImGui::IsMouseDragging(ImGuiMouseButton_Right) && m_OperationMode == OpMode::CONSTRUCT)
     {
         ImVec2 drag_delta = ImGui::GetIO().MouseDelta;
         m_xOffset += drag_delta.x;

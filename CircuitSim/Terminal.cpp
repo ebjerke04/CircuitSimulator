@@ -2,9 +2,10 @@
 
 #include "Component.h"
 
-Terminal::Terminal(ImVec2 gridPosition)
+Terminal::Terminal(ImVec2 deltaGridPosition, const std::string& name) : m_OriginalDeltaGridPosition(deltaGridPosition)
 {
-	m_GridPosition = gridPosition;
+	m_DeltaGridPosition = deltaGridPosition;
+	m_Name = name;
 }
 
 void Terminal::Draw(ImDrawList* drawList, const ImVec2& posOnCanvas, const float& radius)
@@ -12,9 +13,9 @@ void Terminal::Draw(ImDrawList* drawList, const ImVec2& posOnCanvas, const float
 	drawList->AddCircleFilled(posOnCanvas, radius, IM_COL32(255, 0, 0, 255));
 }
 
-bool Terminal::IsHovered(const ImVec2& offset, const float& gridSize, const float& zoom)
+bool Terminal::IsHovered(const ImVec2& componentGridPosition, const ImVec2& offset, const float& gridSize, const float& zoom)
 {
-	ImVec2 terminal_canvas_pos = Component::GridPosToCanvasPos(m_GridPosition, offset, gridSize, zoom);
+	ImVec2 terminal_canvas_pos = Component::GridPosToCanvasPos(Vec2Plus(componentGridPosition, m_DeltaGridPosition), offset, gridSize, zoom);
 
 	ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
 	ImVec2 mouse_pos = ImGui::GetMousePos();
