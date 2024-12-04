@@ -38,6 +38,8 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplOpenGL3_Init("#version 130");
 
     circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 20.0f), "R1", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 28.0f), "R2", circuit));
 }
 
 Application::~Application() 
@@ -91,7 +93,11 @@ void Application::pollUserInput()
     {
         if (m_OperationMode == OpMode::MOVE)
         {
-            m_OperationMode = OpMode::CONSTRUCT;
+            m_OperationMode = OpMode::EDIT;
+        }
+        else if (m_OperationMode == OpMode::WIRING)
+        {
+            m_OperationMode = OpMode::EDIT;
         }
     }
 }
@@ -122,6 +128,10 @@ void Application::drawMenuBar()
         }
         if (ImGui::BeginMenu("Edit"))
         {
+            if (ImGui::MenuItem("Wire"))
+            {
+                m_OperationMode = WIRING;
+            }
             if (ImGui::MenuItem("Move"))
             {
                 m_OperationMode = MOVE;
@@ -138,13 +148,23 @@ void Application::drawMenuBar()
                 }
                 ImGui::EndMenu();
             }
+            
+            if (ImGui::BeginMenu("Passives"))
+            {
+                if (ImGui::MenuItem("Resistor"))
+                {
+                    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(35.0f, 35.0f), "R1", circuit));
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Simulate"))
         {
             if (ImGui::MenuItem("Run"))
             {
-
+                Simulation simulation(circuit);
+                simulation.Run();
             }
             ImGui::EndMenu();
         }
@@ -186,8 +206,12 @@ void Application::drawCircuitCanvas()
     {
         draw_list->AddText(Vec2Plus(canvas_pos, ImVec2(m_GridSize * m_Zoom, m_GridSize * m_Zoom)), IM_COL32(255, 0, 0, 255), "Move Components On - ESC to Exit");
     }
+    else if (m_OperationMode == OpMode::WIRING)
+    {
+        draw_list->AddText(Vec2Plus(canvas_pos, ImVec2(m_GridSize * m_Zoom, m_GridSize * m_Zoom)), IM_COL32(255, 0, 0, 255), "Wiring Components Mode - ESC to Exit");
+    }
 
-    if (ImGui::IsMouseDragging(ImGuiMouseButton_Right) && m_OperationMode == OpMode::CONSTRUCT)
+    if (ImGui::IsMouseDragging(ImGuiMouseButton_Right) && m_OperationMode == OpMode::EDIT)
     {
         ImVec2 drag_delta = ImGui::GetIO().MouseDelta;
         m_xOffset += drag_delta.x;

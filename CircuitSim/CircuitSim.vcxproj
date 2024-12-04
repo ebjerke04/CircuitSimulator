@@ -158,8 +158,11 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Resistor.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Terminal.cpp" />
     <ClCompile Include="VoltageSource_DC.cpp" />
+    <ClCompile Include="Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />
@@ -180,8 +183,11 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="math_helper.h" />
+    <ClInclude Include="Resistor.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="Terminal.h" />
     <ClInclude Include="VoltageSource_DC.h" />
+    <ClInclude Include="Wire.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />

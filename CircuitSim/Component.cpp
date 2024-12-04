@@ -1,7 +1,7 @@
 #include "Component.h"
 #include "Application.h"
 
-Component::Component(const ImVec2& gridPosition, const std::string& name, const Circuit& circuit) : m_Circuit(circuit)
+Component::Component(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : m_Circuit(circuit)
 {
 	m_GridPosition = gridPosition;
 	m_Name = name;
@@ -60,7 +60,7 @@ void Component::handleMoving(const ImVec2& offset, float gridSize, float zoom, i
 			m_Rotation = (m_Rotation > 3) ? m_Rotation = 0 : m_Rotation;
 
 			float theta = m_Rotation * (3.141592 / 2.0f);
-			for (const std::unique_ptr<Terminal>& terminal : m_Terminals)
+			for (const std::shared_ptr<Terminal>& terminal : m_Terminals)
 			{
 				ImVec2 original_delta_grid = terminal->GetOriginalDeltaGridPosition();
 				ImVec2 updated_delta_grid = Rotate(original_delta_grid.x, original_delta_grid.y, theta);

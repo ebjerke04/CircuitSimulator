@@ -2,17 +2,21 @@
 #define APPLICATION_H
 
 #include "VoltageSource_DC.h"
+#include "Resistor.h"
+
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
 
 #include "Circuit.h"
+#include "Simulation.h"
 
 enum OpMode
 {
-    CONSTRUCT = 0,
+    EDIT = 0,
     MOVE = 1,
-    SIMULATE = 2
+    WIRING = 2,
+    SIMULATE = 3
 };
 
 class Application {
@@ -35,7 +39,7 @@ private:
 
     GLFWwindow* m_Window;
     ImFont* m_MainFont;
-    OpMode m_OperationMode = CONSTRUCT;
+    OpMode m_OperationMode = EDIT;
 
     Circuit circuit;
 

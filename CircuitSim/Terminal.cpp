@@ -2,7 +2,7 @@
 
 #include "Component.h"
 
-Terminal::Terminal(ImVec2 deltaGridPosition, const std::string& name) : m_OriginalDeltaGridPosition(deltaGridPosition)
+Terminal::Terminal(ImVec2 deltaGridPosition, const std::string& name, Component* parent) : m_OriginalDeltaGridPosition(deltaGridPosition), m_ParentComponent(parent)
 {
 	m_DeltaGridPosition = deltaGridPosition;
 	m_Name = name;
