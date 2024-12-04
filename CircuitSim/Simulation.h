@@ -12,6 +12,8 @@
 #include "Resistor.h"
 #include "VoltageSource_DC.h"
 
+#include "Eigen/Dense"
+
 class Simulation
 {
 public:

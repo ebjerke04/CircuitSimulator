@@ -2,9 +2,9 @@
 
 Simulation::Simulation(const Circuit& circuit) : m_Circuit(circuit) {}
 
-void Simulation::Run() 
+void Simulation::Run()
 {
-    
+
 }
 
 void Simulation::LogResults() const 
