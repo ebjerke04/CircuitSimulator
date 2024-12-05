@@ -8,7 +8,7 @@ float Simulation::CalculateNetResistance() const {
 
 void Simulation::Run() 
 {
-    std::cout << "Net resistance: " << CalculateNetResistance() << std::endl;
+    m_Circuit.LogWires();
 }
 
 void Simulation::LogResults() const 

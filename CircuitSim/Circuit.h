@@ -22,6 +22,7 @@ public:
 		std::cout << wire_description << std::endl;
 		m_Wires.push_back(std::move(wire)); 
 	}
+	const void LogWires() const;
 
 	const std::unique_ptr<WiringManager>& GetWiringManager() const { return m_WiringManager; }
 	const std::vector<std::unique_ptr<Component>>& GetComponents() const { return m_Components; }
