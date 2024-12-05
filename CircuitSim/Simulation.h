@@ -22,6 +22,7 @@ public:
     void Run(); // Run the simulation
     void LogResults() const; // Log terminal voltages
 
+    float CalculateNetResistance() const;
 private:
     const Circuit& m_Circuit;
     std::unordered_map<std::string, float> m_TerminalVoltages; // Map terminal names to their voltages

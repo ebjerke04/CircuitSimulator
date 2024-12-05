@@ -39,7 +39,7 @@ Application::Application() : m_Window(nullptr)
 
     circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 20.0f), "R1", circuit));
-    //circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 28.0f), "R2", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 28.0f), "R2", circuit));
 }
 
 Application::~Application() 

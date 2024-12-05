@@ -2,9 +2,13 @@
 
 Simulation::Simulation(const Circuit& circuit) : m_Circuit(circuit) {}
 
-void Simulation::Run()
-{
+float Simulation::CalculateNetResistance() const {
+    return 0.0f;
+}
 
+void Simulation::Run() 
+{
+    std::cout << "Net resistance: " << CalculateNetResistance() << std::endl;
 }
 
 void Simulation::LogResults() const 

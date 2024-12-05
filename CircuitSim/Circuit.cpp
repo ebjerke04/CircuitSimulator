@@ -2,7 +2,7 @@
 
 Circuit::Circuit()
 {
-
+	m_WiringManager = std::make_unique<WiringManager>(m_Wires);
 }
 
 Circuit::~Circuit()

@@ -163,6 +163,7 @@
     <ClCompile Include="Terminal.cpp" />
     <ClCompile Include="VoltageSource_DC.cpp" />
     <ClCompile Include="Wire.cpp" />
+    <ClCompile Include="WiringManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Terminal.h" />
     <ClInclude Include="VoltageSource_DC.h" />
     <ClInclude Include="Wire.h" />
+    <ClInclude Include="WiringManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="imgui\LICENSE.txt" />

@@ -30,15 +30,7 @@ void Resistor::HandleInput(const ImVec2& offset, float gridSize, float zoom, int
 		{
 			if (ImGui::IsMouseClicked(0) && opMode == OpMode::WIRING)
 			{
-				if (m_Circuit.IsWiring() == false) {
-					m_Circuit.MakeNewWire(terminal);
-					std::cout << "Wire started at terminal: " << terminal->GetName() << std::endl;
-				}
-				else if (m_Circuit.IsWiring())
-				{
-					m_Circuit.FinishWire(terminal);
-					std::cout << "Wire ended at terminal: " << terminal->GetName() << std::endl;
-				}
+				m_Circuit.GetWiringManager()->TerminalClicked(terminal);
 			}
 		}
 	}

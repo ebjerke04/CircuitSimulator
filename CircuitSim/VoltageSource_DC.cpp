@@ -2,8 +2,8 @@
 
 VoltageSource_DC::VoltageSource_DC(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : Component(gridPosition, name, circuit)
 {
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "Positive", this));
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0,  3), "Ground", this));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "POS", this));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0,  3), "NEG", this));
 }
 
 void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode)
@@ -23,22 +23,14 @@ void VoltageSource_DC::HandleInput(const ImVec2& offset, float gridSize, float z
 	}
 
 	handleMoving(offset, gridSize, zoom, opMode);
-
+	
 	for (const std::shared_ptr<Terminal>& terminal : m_Terminals)
 	{
 		if (terminal->IsHovered(m_GridPosition, offset, gridSize, zoom))
 		{
 			if (ImGui::IsMouseClicked(0) && opMode == OpMode::WIRING)
 			{
-				if (m_Circuit.IsWiring() == false) {
-					m_Circuit.MakeNewWire(terminal);
-					std::cout << "Wire started at terminal: " << terminal->GetName() << std::endl;
-				}
-				else if (m_Circuit.IsWiring())
-				{
-					m_Circuit.FinishWire(terminal);
-					std::cout << "Wire ended at terminal: " << terminal->GetName() << std::endl;
-				}
+				m_Circuit.GetWiringManager()->TerminalClicked(terminal);
 			}
 		}
 	}
