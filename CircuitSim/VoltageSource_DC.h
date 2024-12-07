@@ -13,6 +13,8 @@ public:
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
 
     const float& GetVoltage() const { return m_Voltage; }
+    const std::shared_ptr<Terminal>& GetPositiveTerminal() const;
+    const std::shared_ptr<Terminal>& GetNegativeTerminal() const;
 private:
     void drawEditMenu();
 

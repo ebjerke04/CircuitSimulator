@@ -10,6 +10,7 @@ public:
 	Wire();
 
 	void AddTerminal(std::shared_ptr<Terminal> terminal);
+	void LogWire();
 	bool IsTerminalConnected(const std::shared_ptr<Terminal>& terminal) const;
 
 	const std::vector<std::shared_ptr<Terminal>>& GetConnectedTerminals() const { return m_ConnectedTerminals; }

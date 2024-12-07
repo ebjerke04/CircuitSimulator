@@ -153,7 +153,7 @@ void Application::drawMenuBar()
             {
                 if (ImGui::MenuItem("Resistor"))
                 {
-                    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(35.0f, 35.0f), "R1", circuit));
+                    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(35.0f, 35.0f), "R3", circuit));
                 }
                 ImGui::EndMenu();
             }

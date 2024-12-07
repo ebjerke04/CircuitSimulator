@@ -91,3 +91,19 @@ void VoltageSource_DC::drawEditMenu()
 
 	ImGui::End();
 }
+
+const std::shared_ptr<Terminal>& VoltageSource_DC::GetPositiveTerminal() const
+{
+	for (const std::shared_ptr<Terminal>& terminal : m_Terminals)
+	{
+		if (terminal->GetName() == "POS") return terminal;
+	}
+}
+
+const std::shared_ptr<Terminal>& VoltageSource_DC::GetNegativeTerminal() const
+{
+	for (const std::shared_ptr<Terminal>& terminal : m_Terminals)
+	{
+		if (terminal->GetName() == "NEG") return terminal;
+	}
+}

@@ -15,7 +15,8 @@ public:
 	virtual void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode) = 0;
 	virtual void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) = 0;
 
-	const std::vector<std::shared_ptr<Terminal>>& GetTerminals() const{ return m_Terminals; }
+	const std::vector<std::shared_ptr<Terminal>>& GetTerminals() const { return m_Terminals; }
+	const std::string& GetName() const { return m_Name; }
 	const bool& IsMoving() const { return m_Moving; }
 	static ImVec2 GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, float gridSize, float zoom);
 protected:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include "imgui/imgui.h"
 #include "math_helper.h"
 

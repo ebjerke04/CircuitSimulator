@@ -2,34 +2,7 @@
 
 WiringManager::WiringManager(std::vector<std::unique_ptr<Wire>>& wires) : m_Wires(wires)
 {
-    /*
-    std::vector<std::unique_ptr<int>> vec;
-    vec.push_back(std::make_unique<int>(10));
-    vec.push_back(std::make_unique<int>(20));
-    vec.push_back(std::make_unique<int>(30));
-
-    // Display original vector
-    std::cout << "Before move: ";
-    for (const auto& ptr : vec) {
-        std::cout << (ptr ? *ptr : 0) << " ";
-    }
-    std::cout << std::endl;
-
-    // Move the second unique_ptr out of the vector
-    std::unique_ptr<int> extracted = std::move(vec[1]);
-
-    vec.erase(std::remove_if(vec.begin(), vec.end(), [](const std::unique_ptr<int>& ptr) { return ptr == nullptr; }), vec.end());
-
-    // Display after move
-    std::cout << "After move: ";
-    for (const auto& ptr : vec) {
-        std::cout << (ptr ? *ptr : 0) << " ";
-    }
-    std::cout << std::endl;
-
-    // Use the extracted unique_ptr
-    std::cout << "Extracted value: " << *extracted << std::endl;
-    */
+    
 }
 
 void WiringManager::TerminalClicked(const std::shared_ptr<Terminal>& terminal)
