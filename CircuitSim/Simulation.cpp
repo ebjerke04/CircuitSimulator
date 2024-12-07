@@ -49,7 +49,6 @@ float Simulation::CalculateNetResistance() const {
                 return 0;
             }
             visited.insert(currentTerminal);
-            std::cout << "current terminal: " << currentTerminal->GetName() << std::endl;
 
             const std::unique_ptr<Wire>& wire = getWireAtTerminal(currentTerminal);
             for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
@@ -62,6 +61,13 @@ float Simulation::CalculateNetResistance() const {
             }
 
             int other_terminals_count = wire->GetConnectedTerminals().size() - 1;
+            for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
+            {
+                if (wire_terminal == currentTerminal) continue;
+                if (notVisited(wire_terminal) == false) other_terminals_count -= 1;
+            }
+            if (other_terminals_count <= 0) return 0;
+
             if (other_terminals_count == 1)
             {
                 // only one other terminal on wire (series connection)
