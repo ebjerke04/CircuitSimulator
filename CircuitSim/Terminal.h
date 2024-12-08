@@ -4,8 +4,7 @@
 #include <iostream>
 #include "imgui/imgui.h"
 #include "math_helper.h"
-
-class Component;
+#include "Component.h"
 
 class Terminal
 {
@@ -19,6 +18,7 @@ public:
 
 	const ImVec2& GetOriginalDeltaGridPosition() const { return m_OriginalDeltaGridPosition; }
 	const ImVec2& GetDeltaGridPosition() const { return m_DeltaGridPosition; }
+	const ImVec2& GetActualGridPosition() const { return Vec2Plus(m_ParentComponent->GetGridPosition(), m_DeltaGridPosition); }
 	const std::string& GetName() const { return m_Name; }
 	Component* GetComponent() const { return m_ParentComponent; }
 private:

@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "math_helper.h"
 #include "Application.h"
+#include "imgui/imgui.h"
 
 class VoltageSource_DC :
     public Component

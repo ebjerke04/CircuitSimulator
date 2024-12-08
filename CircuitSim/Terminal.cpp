@@ -1,7 +1,5 @@
 #include "Terminal.h"
 
-#include "Component.h"
-
 Terminal::Terminal(ImVec2 deltaGridPosition, const std::string& name, Component* parent) : m_OriginalDeltaGridPosition(deltaGridPosition), m_ParentComponent(parent)
 {
 	m_DeltaGridPosition = deltaGridPosition;

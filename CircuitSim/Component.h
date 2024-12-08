@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <vector>
+#include "imgui/imgui.h"
 
-#include "Terminal.h"
-
+class Terminal;
 class Circuit;
 
 class Component
@@ -19,6 +19,7 @@ public:
 	const std::string& GetName() const { return m_Name; }
 	const bool& IsMoving() const { return m_Moving; }
 	static ImVec2 GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, float gridSize, float zoom);
+	const ImVec2& GetGridPosition() const { return m_GridPosition; }
 protected:
 	virtual void drawEditMenu() = 0;
 

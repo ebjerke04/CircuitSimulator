@@ -38,8 +38,10 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplOpenGL3_Init("#version 130");
 
     circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1", circuit));
-    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 20.0f), "R1", circuit));
-    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 28.0f), "R2", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 16.0f), "R1", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
 }
 
 Application::~Application() 
@@ -239,6 +241,11 @@ void Application::drawAndHandleCircuit()
     {
         component->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
         component->HandleInput(ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom, m_OperationMode);
+    }
+
+    for (const std::unique_ptr<Wire>& wire : circuit.GetWires())
+    {
+        wire->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
     }
 }
 

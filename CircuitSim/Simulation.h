@@ -8,7 +8,6 @@
 #include <vector>
 #include <unordered_map>
 #include <stdexcept>
-#include <unordered_set>
 
 #include "Resistor.h"
 #include "VoltageSource_DC.h"

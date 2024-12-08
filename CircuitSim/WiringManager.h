@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include "Wire.h"
-#include "Terminal.h"
 
 class WiringManager
 {

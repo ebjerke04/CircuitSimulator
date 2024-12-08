@@ -12,16 +12,6 @@ public:
 	~Circuit();
 
 	void PushComponent(std::unique_ptr<Component> component);
-	void AddWire(std::unique_ptr<Wire> wire) 
-	{ 
-		std::string wire_description = "Wire connects terminals: ";
-		for (const std::shared_ptr<Terminal>& terminal : wire->GetConnectedTerminals())
-		{
-			wire_description += (terminal->GetName() + ", ");
-		}
-		std::cout << wire_description << std::endl;
-		m_Wires.push_back(std::move(wire)); 
-	}
 	const void LogWires() const;
 
 	const std::unique_ptr<WiringManager>& GetWiringManager() const { return m_WiringManager; }

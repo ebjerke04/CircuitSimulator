@@ -38,12 +38,12 @@ float Simulation::CalculateNetResistance() const {
             if (visited.find(terminal) != visited.end()) return false;
             return true;
         };
-
+    
     std::function<float(const std::shared_ptr<Terminal>&)> calculateResistance;
     calculateResistance = [&](const std::shared_ptr<Terminal>& currentTerminal) -> float
         {
             float total = 0.0f;
-            
+
             if (notVisited(currentTerminal) == false)
             {
                 return 0;
@@ -61,12 +61,6 @@ float Simulation::CalculateNetResistance() const {
             }
 
             int other_terminals_count = wire->GetConnectedTerminals().size() - 1;
-            for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
-            {
-                if (wire_terminal == currentTerminal) continue;
-                if (notVisited(wire_terminal) == false) other_terminals_count -= 1;
-            }
-            if (other_terminals_count <= 0) return 0;
 
             if (other_terminals_count == 1)
             {
@@ -127,7 +121,7 @@ float Simulation::CalculateNetResistance() const {
                             resistance += calculateResistance(other_terminal);
                             branch_resistances.push_back(resistance);
                         }
-                        
+
                     }
                 }
 
@@ -164,8 +158,9 @@ float Simulation::CalculateNetResistance() const {
 
 void Simulation::Run() 
 {
-    //m_Circuit.LogWires();
+    m_Circuit.LogWires();
 
+    std::cout << std::endl;
     std::cout <<  CalculateNetResistance() << std::endl;
 }
 
