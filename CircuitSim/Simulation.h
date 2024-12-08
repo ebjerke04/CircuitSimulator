@@ -21,6 +21,9 @@ class Simulation
 public:
     Simulation(const Circuit& circuit);
 
+    void SetSettingsVisible() { m_DrawSettings = true; }
+    void DrawSettingsCustomizer();
+
     void Run(); // Run the simulation
     void LogResults() const; // Log terminal voltages
 
@@ -42,5 +45,11 @@ public:
     float CalculateNetResistance() const;
 private:
     const Circuit& m_Circuit;
-    std::unordered_map<std::string, float> m_TerminalVoltages; // Map terminal names to their voltages
+    std::unordered_map<std::string, float> m_TerminalVoltages;
+
+    bool m_DrawSettings = false;
+
+    // Simulation Settings
+    float m_DurationMicro = 1000.0f;
+    float m_TimeStepMicro = 5.0f;
 };

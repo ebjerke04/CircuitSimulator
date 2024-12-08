@@ -10,7 +10,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Circuit.h"
-#include "Simulation.h"
 
 #include "implot/implot.h"
 
@@ -21,6 +20,8 @@ enum OpMode
     WIRING = 2,
     SIMULATE = 3
 };
+
+class Simulation;
 
 class Application {
 public:
@@ -45,6 +46,7 @@ private:
     OpMode m_OperationMode = EDIT;
 
     Circuit circuit;
+    std::unique_ptr<Simulation> m_Simulation;
 
     float m_Zoom = 1.0f;
     float m_GridSize = 10.0f;

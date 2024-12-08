@@ -2,6 +2,21 @@
 
 Simulation::Simulation(const Circuit& circuit) : m_Circuit(circuit) {}
 
+void Simulation::DrawSettingsCustomizer()
+{
+    if (m_DrawSettings)
+    {
+        ImGui::Begin("Simulation Settings", &m_DrawSettings);
+
+        ImGui::Text("Duration:");
+        ImGui::InputFloat("", &m_DurationMicro);
+        ImGui::Text("Time Step");
+        ImGui::InputFloat("", &m_TimeStepMicro);
+
+        ImGui::End();
+    }
+}
+
 float Simulation::CalculateNetResistance() const {
     // find voltage source positive terminal...
     std::shared_ptr<Terminal> vs_positive_terminal = nullptr;

@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "Simulation.h"
+
 template<typename T>
 inline T ImClamp(T v, T mn, T mx) 
 {
@@ -38,11 +40,13 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    circuit.PushComponent(std::make_unique<VoltageSource_AC>(ImVec2(20.0f, 20.0f), "V1", circuit));
+    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 16.0f), "R1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
+
+    m_Simulation = std::make_unique<Simulation>(circuit);
 }
 
 Application::~Application() 
@@ -164,11 +168,13 @@ void Application::drawMenuBar()
         }
         if (ImGui::BeginMenu("Simulate"))
         {
+            if (ImGui::MenuItem("Settings"))
+            {
+                m_Simulation->SetSettingsVisible();
+            }
             if (ImGui::MenuItem("Run"))
             {
-                Simulation simulation(circuit);
-                //simulation.Run();
-                simulation.TestPlots();
+                m_Simulation->Run();
             }
             ImGui::EndMenu();
         }
@@ -275,9 +281,8 @@ void Application::handleImGui()
 
     ImGui::End();
 
-    Simulation simulation(circuit);
-    //simulation.Run();
-    simulation.TestPlots();
+    m_Simulation->DrawSettingsCustomizer();
+    m_Simulation->TestPlots();
 }
 
 void Application::cleanup() 
