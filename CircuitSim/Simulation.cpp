@@ -38,7 +38,7 @@ float Simulation::CalculateNetResistance() const {
             if (visited.find(terminal) != visited.end()) return false;
             return true;
         };
-    
+
     std::function<float(const std::shared_ptr<Terminal>&)> calculateResistance;
     calculateResistance = [&](const std::shared_ptr<Terminal>& currentTerminal) -> float
         {
@@ -156,18 +156,18 @@ float Simulation::CalculateNetResistance() const {
     return net_resistance;
 }
 
-void Simulation::Run() 
+void Simulation::Run()
 {
     m_Circuit.LogWires();
 
     std::cout << std::endl;
-    std::cout <<  CalculateNetResistance() << std::endl;
+    std::cout << CalculateNetResistance() << std::endl;
 }
 
-void Simulation::LogResults() const 
+void Simulation::LogResults() const
 {
     std::cout << "Simulation Results:" << std::endl;
-    for (const auto& [terminalName, voltage] : m_TerminalVoltages) 
+    for (const auto& [terminalName, voltage] : m_TerminalVoltages)
     {
         std::cout << "Terminal " << terminalName << ": " << voltage << " V" << std::endl;
     }

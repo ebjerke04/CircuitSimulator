@@ -8,11 +8,12 @@
 #include <vector>
 #include <unordered_map>
 #include <stdexcept>
+#include <functional>
 
 #include "Resistor.h"
 #include "VoltageSource_DC.h"
 
-#include "Eigen/Dense"
+//#include "Eigen/Dense"
 
 class Simulation
 {
