@@ -32,9 +32,7 @@ protected:
 	bool m_Moving = false;
 	std::string m_Name;
 
-
 	std::vector<std::shared_ptr<Terminal>> m_Terminals;
-
 	Circuit& m_Circuit;
 };
 

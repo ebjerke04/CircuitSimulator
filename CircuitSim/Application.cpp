@@ -31,13 +31,14 @@ Application::Application() : m_Window(nullptr)
     // Initialize ImGui
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     m_MainFont = io.Fonts->AddFontFromFileTTF("resources/font.ttf", 20.0f);
 
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(20.0f, 20.0f), "V1", circuit));
+    circuit.PushComponent(std::make_unique<VoltageSource_AC>(ImVec2(20.0f, 20.0f), "V1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 16.0f), "R1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
@@ -166,7 +167,8 @@ void Application::drawMenuBar()
             if (ImGui::MenuItem("Run"))
             {
                 Simulation simulation(circuit);
-                simulation.Run();
+                //simulation.Run();
+                simulation.TestPlots();
             }
             ImGui::EndMenu();
         }
@@ -272,6 +274,10 @@ void Application::handleImGui()
     drawAndHandleCircuit();
 
     ImGui::End();
+
+    Simulation simulation(circuit);
+    //simulation.Run();
+    simulation.TestPlots();
 }
 
 void Application::cleanup() 

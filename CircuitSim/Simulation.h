@@ -12,8 +12,9 @@
 
 #include "Resistor.h"
 #include "VoltageSource_DC.h"
+#include "VoltageSource_AC.h"
 
-//#include "Eigen/Dense"
+#include "implot/implot.h"
 
 class Simulation
 {
@@ -22,6 +23,21 @@ public:
 
     void Run(); // Run the simulation
     void LogResults() const; // Log terminal voltages
+
+    void TestPlots()
+    {
+        ImGui::Begin("Test plot");
+        static double xs2[1000], ys2[1000];
+        for (int i = 0; i < 1000; ++i) {
+            xs2[i] = i * 1 / 19.0f;
+            ys2[i] = xs2[i] * xs2[i];
+        }
+        if (ImPlot::BeginPlot("My Plot")) {
+            ImPlot::PlotLine("My Line Plot", xs2, ys2, 1000);
+            ImPlot::EndPlot();
+        }
+        ImGui::End();
+    }
 
     float CalculateNetResistance() const;
 private:

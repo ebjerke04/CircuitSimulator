@@ -16,6 +16,9 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{e854f7cd-3826-46ec-9eb1-30398073938d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\implot">
+      <UniqueIdentifier>{dd137c5b-cf21-4bb4-b2c9-0b76d9b84c01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,6 +70,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WiringManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implot\implot_demo.cpp">
+      <Filter>Source Files\implot</Filter>
+    </ClCompile>
+    <ClCompile Include="implot\implot_items.cpp">
+      <Filter>Source Files\implot</Filter>
+    </ClCompile>
+    <ClCompile Include="implot\implot.cpp">
+      <Filter>Source Files\implot</Filter>
+    </ClCompile>
+    <ClCompile Include="VoltageSource_AC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,6 +152,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WiringManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="implot\implot_internal.h">
+      <Filter>Source Files\implot</Filter>
+    </ClInclude>
+    <ClInclude Include="implot\implot.h">
+      <Filter>Source Files\implot</Filter>
+    </ClInclude>
+    <ClInclude Include="VoltageSource_AC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
