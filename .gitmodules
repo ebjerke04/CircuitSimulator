@@ -1,0 +1,3 @@
+[submodule "CircuitSim/implot"]
+	path = CircuitSim/implot
+	url = https://github.com/epezent/implot.git
