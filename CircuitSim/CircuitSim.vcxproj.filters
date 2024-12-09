@@ -84,6 +84,9 @@
     <ClCompile Include="VoltageSource_AC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig">
@@ -161,6 +164,9 @@
       <Filter>Source Files\implot</Filter>
     </ClInclude>
     <ClInclude Include="VoltageSource_AC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

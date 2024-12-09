@@ -7,9 +7,11 @@
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_internal.h"
 #include <GLFW/glfw3.h>
 
 #include "Circuit.h"
+#include "Console.h"
 
 #include "implot/implot.h"
 
@@ -46,6 +48,7 @@ private:
     OpMode m_OperationMode = EDIT;
 
     Circuit circuit;
+    Console m_Console;
     std::unique_ptr<Simulation> m_Simulation;
 
     float m_Zoom = 1.0f;
@@ -54,6 +57,7 @@ private:
     float m_yOffset = 0.0f;
 
     bool m_DrawViewCustomizer = false;
+    bool m_DrawConsole = true;
     ImVec4 m_CanvasColor = ImVec4(0.95f, 0.95f, 0.95f, 1.0f);
     ImVec4 m_GridColor = ImVec4(0.61f, 0.61f, 0.61f, 1.0f);
 };

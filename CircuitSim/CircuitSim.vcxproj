@@ -150,6 +150,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Circuit.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Circuit.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />

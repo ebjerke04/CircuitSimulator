@@ -1,6 +1,6 @@
 #include "Simulation.h"
 
-Simulation::Simulation(const Circuit& circuit) : m_Circuit(circuit) {}
+Simulation::Simulation(const Circuit& circuit, Console& console) : m_Circuit(circuit), m_Console(console) {}
 
 void Simulation::DrawSettingsCustomizer()
 {
@@ -64,13 +64,14 @@ float Simulation::CalculateNetResistance() const {
                 return 0;
             }
             visited.insert(currentTerminal);
+            m_Console.PushMessage("Current terminal: " + currentTerminal->GetName());
 
             const std::unique_ptr<Wire>& wire = getWireAtTerminal(currentTerminal);
             for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
             {
                 if (wire_terminal == vs_negative_terminal)
                 {
-                    std::cout << "Target terminal found" << std::endl;
+                    m_Console.PushMessage("Target terminal found");
                     return 0.0f;
                 }
             }
@@ -150,7 +151,7 @@ float Simulation::CalculateNetResistance() const {
                     }
                     else
                     {
-                        std::cerr << "Invalid branch resistance encountered: " << branch_resistance << std::endl;
+                        m_Console.PushMessage("Invalid branch resistance encountered: " + std::to_string(branch_resistance));
                     }
                 }
 
@@ -160,7 +161,7 @@ float Simulation::CalculateNetResistance() const {
                 }
                 else
                 {
-                    std::cerr << "Parallel branch has no valid conductances." << std::endl;
+                    m_Console.PushMessage("Parallel branch has no valid conductances.");
                 }
             }
 
@@ -175,8 +176,7 @@ void Simulation::Run()
 {
     m_Circuit.LogWires();
 
-    std::cout << std::endl;
-    std::cout << CalculateNetResistance() << std::endl;
+    m_Console.PushMessage(std::to_string(CalculateNetResistance()));
 }
 
 void Simulation::LogResults() const

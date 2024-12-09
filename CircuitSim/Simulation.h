@@ -13,13 +13,14 @@
 #include "Resistor.h"
 #include "VoltageSource_DC.h"
 #include "VoltageSource_AC.h"
+#include "Console.h"
 
 #include "implot/implot.h"
 
 class Simulation
 {
 public:
-    Simulation(const Circuit& circuit);
+    Simulation(const Circuit& circuit, Console& console);
 
     void SetSettingsVisible() { m_DrawSettings = true; }
     void DrawSettingsCustomizer();
@@ -45,6 +46,7 @@ public:
     float CalculateNetResistance() const;
 private:
     const Circuit& m_Circuit;
+    Console& m_Console;
     std::unordered_map<std::string, float> m_TerminalVoltages;
 
     bool m_DrawSettings = false;

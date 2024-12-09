@@ -3,7 +3,7 @@
 #include "Simulation.h"
 
 template<typename T>
-inline T ImClamp(T v, T mn, T mx) 
+inline T ZoomClamp(T v, T mn, T mx) 
 {
     return (v < mn) ? mn : (v > mx) ? mx : v;
 }
@@ -37,6 +37,8 @@ Application::Application() : m_Window(nullptr)
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+    ImGui::StyleColorsDark();
+
     m_MainFont = io.Fonts->AddFontFromFileTTF("resources/font.ttf", 20.0f);
 
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
@@ -48,7 +50,7 @@ Application::Application() : m_Window(nullptr)
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
 
-    m_Simulation = std::make_unique<Simulation>(circuit);
+    m_Simulation = std::make_unique<Simulation>(circuit, m_Console);
 }
 
 Application::~Application() 
@@ -90,11 +92,11 @@ void Application::pollUserInput()
     {
         if (ImGui::IsKeyPressed(ImGuiKey_Equal)) 
         { // Zoom in
-            m_Zoom = ImClamp(m_Zoom * 1.1f, 0.7f, 3.5f);
+            m_Zoom = ZoomClamp(m_Zoom * 1.1f, 0.7f, 3.5f);
         }
         else if (ImGui::IsKeyPressed(ImGuiKey_Minus)) 
         { // Zoom out
-            m_Zoom = ImClamp(m_Zoom / 1.1f, 0.7f, 3.5f);
+            m_Zoom = ZoomClamp(m_Zoom / 1.1f, 0.7f, 3.5f);
         }
     }
 
@@ -263,25 +265,49 @@ void Application::handleImGui()
 {
     pollUserInput();
     drawMenuBar();
-    drawViewCustomizer();
 
-    ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y - ImGui::GetFrameHeight()));
+    //ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetFrameHeight()));
+    //ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y - ImGui::GetFrameHeight()));
 
-    ImGui::Begin("Canvas", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoScrollWithMouse |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoBringToFrontOnFocus);
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | 
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::Begin("DockSpace", nullptr, window_flags);
+    ImGui::PopStyleVar(2);
+
+    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+
+    static bool initialized = false;
+    if (!initialized)
+    {
+        initialized = true;
+        ImGui::DockBuilderRemoveNode(dockspace_id);
+        ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+        ImGuiID dock_main_id = dockspace_id;
+        ImGui::DockBuilderDockWindow("Canvas", dock_main_id);
+        ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+        ImGui::DockBuilderFinish(dock_main_id);
+    }
+
+    ImGui::End();
+
+    // Draw Circuit Canvas
+    ImGui::Begin("Canvas", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
 
     drawCircuitCanvas();
     drawAndHandleCircuit();
 
     ImGui::End();
+    
+    m_Console.Draw(&m_DrawConsole);
+    drawViewCustomizer();
 
     m_Simulation->DrawSettingsCustomizer();
     m_Simulation->TestPlots();
