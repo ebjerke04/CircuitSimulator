@@ -35,6 +35,8 @@ Application::Application() : m_Window(nullptr)
     ImGui::CreateContext();
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     m_MainFont = io.Fonts->AddFontFromFileTTF("resources/font.ttf", 20.0f);
 
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
