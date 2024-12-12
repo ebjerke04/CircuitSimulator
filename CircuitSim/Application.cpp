@@ -49,6 +49,10 @@ Application::Application() : m_Window(nullptr)
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(31.0f, 16.0f), "R5", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(31.0f, 24.0f), "R6", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(34.0f, 16.0f), "R7", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(34.0f, 24.0f), "R8", circuit));
 
     m_Simulation = std::make_unique<Simulation>(circuit, m_Console);
 }
@@ -257,7 +261,8 @@ void Application::drawAndHandleCircuit()
 
     for (const std::unique_ptr<Wire>& wire : circuit.GetWires())
     {
-        wire->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
+        wire->Draw(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom, IM_COL32(0, 0, 255, 255));
+        circuit.GetWiringManager()->DrawCurrentWire(draw_list, ImVec2(canvas_pos.x + m_xOffset, canvas_pos.y + m_yOffset), m_GridSize, m_Zoom);
     }
 }
 
@@ -276,6 +281,7 @@ void Application::handleImGui()
 
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | 
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::Begin("DockSpace", nullptr, window_flags);

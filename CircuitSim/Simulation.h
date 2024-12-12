@@ -17,6 +17,8 @@
 
 #include "implot/implot.h"
 
+#include "Eigen/Dense"
+
 class Simulation
 {
 public:
@@ -44,6 +46,7 @@ public:
     }
 
     float CalculateNetResistance() const;
+    float FindEquivalentResistance() const;
 private:
     const Circuit& m_Circuit;
     Console& m_Console;

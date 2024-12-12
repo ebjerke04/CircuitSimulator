@@ -7,7 +7,7 @@ WiringManager::WiringManager(std::vector<std::unique_ptr<Wire>>& wires) : m_Wire
 
 void WiringManager::TerminalClicked(const std::shared_ptr<Terminal>& terminal)
 {
-    std::unique_ptr<Wire> wire_at_terminal = std::move(wireAtTerminal(terminal));
+    std::unique_ptr<Wire> wire_at_terminal = std::move(wireAtTerminal(terminal.get()));
     if (!m_Wiring)
     {
         if (wire_at_terminal != nullptr)
@@ -44,11 +44,35 @@ void WiringManager::TerminalClicked(const std::shared_ptr<Terminal>& terminal)
     }
 }
 
-std::unique_ptr<Wire> WiringManager::wireAtTerminal(const std::shared_ptr<Terminal>&terminal)
+void WiringManager::DrawCurrentWire(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom)
+{
+    if (m_CurrentWire != nullptr)
+    {
+        m_CurrentWire->Draw(drawList, offset, gridSize, zoom, IM_COL32(255, 0, 0, 255));
+    }
+}
+
+Wire* WiringManager::GetWireAtTerminal(Terminal* terminal) const
+{
+    for (const std::unique_ptr<Wire>& wire : m_Wires)
+    {
+        for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
+        {
+            if (terminal == wire_terminal.get())
+            {
+                return wire.get();
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+std::unique_ptr<Wire> WiringManager::wireAtTerminal(Terminal* terminal)
 {
     for (std::unique_ptr<Wire>& wire : m_Wires) {
         for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals()) {
-            if (terminal == wire_terminal) {
+            if (terminal == wire_terminal.get()) {
                 std::unique_ptr<Wire> found_wire = std::move(wire);
                 m_Wires.erase(
                     std::remove_if(

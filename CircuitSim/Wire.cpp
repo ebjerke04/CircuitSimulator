@@ -32,7 +32,7 @@ bool Wire::IsTerminalConnected(const std::shared_ptr<Terminal>& terminal) const
 	return false;
 }
 
-void Wire::Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom)
+void Wire::Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom, ImU32 color)
 {
     const std::vector<std::shared_ptr<Terminal>>& wire_terminals = GetConnectedTerminals();
     if (wire_terminals.empty()) return;
@@ -64,7 +64,7 @@ void Wire::Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, floa
         if (closest)
         {
             ImVec2 closest_pos = Component::GridPosToCanvasPos(closest->GetActualGridPosition(), offset, gridSize, zoom);
-            drawList->AddLine(terminal_1_pos, closest_pos, IM_COL32(0, 0, 255, 255), 2.0f);
+            drawList->AddLine(terminal_1_pos, closest_pos, color, 2.0f);
             handled_terminals.insert(terminal_1);
         }
     }

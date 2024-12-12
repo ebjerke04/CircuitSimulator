@@ -9,174 +9,125 @@ void Simulation::DrawSettingsCustomizer()
         ImGui::Begin("Simulation Settings", &m_DrawSettings);
 
         ImGui::Text("Duration:");
-        ImGui::InputFloat("", &m_DurationMicro);
+        ImGui::InputFloat("Duration (uS)", &m_DurationMicro);
         ImGui::Text("Time Step");
-        ImGui::InputFloat("", &m_TimeStepMicro);
+        ImGui::InputFloat("Time Step (uS)", &m_TimeStepMicro);
 
         ImGui::End();
     }
 }
 
-float Simulation::CalculateNetResistance() const {
-    // find voltage source positive terminal...
-    std::shared_ptr<Terminal> vs_positive_terminal = nullptr;
-    std::shared_ptr<Terminal> vs_negative_terminal = nullptr;
+float Simulation::FindEquivalentResistance() const 
+{
+    // Form blank conduction matrix, minus one because ground node gets removed
+    int wire_count = m_Circuit.GetWires().size();
+    Eigen::MatrixXf conduction_matrix(wire_count, wire_count);
+    conduction_matrix.setZero();
+    
+    // Get the positive terminal and negative terminal of voltage supply
+    Terminal* vs_positive_terminal = nullptr;
+    Terminal* vs_negative_terminal = nullptr;
     for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
     {
         if (dynamic_cast<VoltageSource_DC*>(component.get()))
         {
             VoltageSource_DC* voltage_source = static_cast<VoltageSource_DC*>(component.get());
-            vs_positive_terminal = voltage_source->GetPositiveTerminal();
-            vs_negative_terminal = voltage_source->GetNegativeTerminal();
+            vs_positive_terminal = voltage_source->GetPositiveTerminal().get();
+            vs_negative_terminal = voltage_source->GetNegativeTerminal().get();
             break;
         }
     }
 
-    std::function<const std::unique_ptr<Wire>& (const std::shared_ptr<Terminal>&)> getWireAtTerminal;
-    getWireAtTerminal = [&](const std::shared_ptr<Terminal>& terminal) -> const std::unique_ptr<Wire>&
+    // Form an array of wires, first element being source positive node and last being ground node
+    std::vector<Wire*> wire_vector;
+    Wire* source_node = m_Circuit.GetWiringManager()->GetWireAtTerminal(vs_positive_terminal);
+    Wire* ground_node = m_Circuit.GetWiringManager()->GetWireAtTerminal(vs_negative_terminal);
+    wire_vector.push_back(source_node);
+
+    for (const std::unique_ptr<Wire>& wire : m_Circuit.GetWires())
+    {
+        Wire* wire_raw = wire.get();
+        auto it = std::find(wire_vector.begin(), wire_vector.end(), wire_raw);
+        
+        if (it != wire_vector.end())
         {
-            for (const std::unique_ptr<Wire>& wire : m_Circuit.GetWires())
-            {
-                for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
-                {
-                    if (terminal == wire_terminal) return wire;
-                }
-            }
+            continue;
+        }
+        if (wire_raw == ground_node) continue;
+        if (wire_raw == source_node) continue;
 
-            return nullptr;
-        };
+        wire_vector.push_back(wire_raw);
+    }
+    wire_vector.push_back(ground_node);
 
-    std::unordered_set<std::shared_ptr<Terminal>> visited;
-    std::function<bool(const std::shared_ptr<Terminal>&)> notVisited;
-    notVisited = [&](const std::shared_ptr<Terminal>& terminal) -> bool
+    for (Wire* wire : wire_vector)
+    {
+        wire->LogWire();
+    }
+
+    for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
+    {
+        if (dynamic_cast<Resistor*>(component.get()))
         {
-            if (visited.find(terminal) != visited.end()) return false;
-            return true;
-        };
+            Resistor* resistor = static_cast<Resistor*>(component.get());
 
-    std::function<float(const std::shared_ptr<Terminal>&)> calculateResistance;
-    calculateResistance = [&](const std::shared_ptr<Terminal>& currentTerminal) -> float
-        {
-            float total = 0.0f;
+            Terminal* terminal1 = resistor->GetTerminals()[0].get();
+            Terminal* terminal2 = resistor->GetTerminals()[1].get();
+            Wire* terminal1_wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(terminal1);
+            Wire* terminal2_wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(terminal2);
 
-            if (notVisited(currentTerminal) == false)
+            int terminal1_node = 999;
+            int terminal2_node = 999;
+            for (int i = 0; i < wire_vector.size(); i++)
             {
-                return 0;
-            }
-            visited.insert(currentTerminal);
-            m_Console.PushMessage("Current terminal: " + currentTerminal->GetName());
-
-            const std::unique_ptr<Wire>& wire = getWireAtTerminal(currentTerminal);
-            for (const std::shared_ptr<Terminal>& wire_terminal : wire->GetConnectedTerminals())
-            {
-                if (wire_terminal == vs_negative_terminal)
+                Wire* wire = wire_vector[i];
+                if (terminal1_wire == wire)
                 {
-                    m_Console.PushMessage("Target terminal found");
-                    return 0.0f;
+                    terminal1_node = i;
+                    break;
                 }
             }
-
-            int other_terminals_count = wire->GetConnectedTerminals().size() - 1;
-
-            if (other_terminals_count == 1)
+            for (int i = 0; i < wire_vector.size(); i++)
             {
-                // only one other terminal on wire (series connection)
-                std::shared_ptr<Terminal> other_terminal = nullptr;
-                for (const std::shared_ptr<Terminal>& terminal : wire->GetConnectedTerminals())
+                Wire* wire = wire_vector[i];
+                if (terminal2_wire == wire)
                 {
-                    if (terminal != currentTerminal)
-                    {
-                        other_terminal = terminal;
-                        break;
-                    }
-                }
-
-                Component* connected_component = other_terminal->GetComponent();
-                if (dynamic_cast<Resistor*>(connected_component))
-                {
-                    Resistor* connected_resistor = static_cast<Resistor*>(connected_component);
-                    float resistance = connected_resistor->GetResistance();
-                    total += resistance;
-
-                    for (const std::shared_ptr<Terminal>& resistor_terminal : connected_resistor->GetTerminals())
-                    {
-                        if (resistor_terminal != other_terminal)
-                        {
-                            other_terminal = resistor_terminal;
-                            break;
-                        }
-                    }
-
-                    total += calculateResistance(other_terminal);
-                }
-            }
-            else if (other_terminals_count > 1)
-            {
-                // parallel branch detected
-                std::vector<float> branch_resistances;
-                for (const std::shared_ptr<Terminal>& terminal : wire->GetConnectedTerminals())
-                {
-                    if (terminal != currentTerminal)
-                    {
-                        Component* connected_component = terminal->GetComponent();
-                        if (dynamic_cast<Resistor*>(connected_component))
-                        {
-                            Resistor* connected_resistor = static_cast<Resistor*>(connected_component);
-                            float resistance = connected_resistor->GetResistance();
-
-                            std::shared_ptr<Terminal> other_terminal = nullptr;
-                            for (const std::shared_ptr<Terminal>& resistor_terminal : connected_resistor->GetTerminals())
-                            {
-                                if (resistor_terminal != terminal)
-                                {
-                                    other_terminal = resistor_terminal;
-                                    break;
-                                }
-                            }
-
-                            resistance += calculateResistance(other_terminal);
-                            branch_resistances.push_back(resistance);
-                        }
-
-                    }
-                }
-
-                float conductance_sum = 0.0f;
-                for (float branch_resistance : branch_resistances)
-                {
-                    if (branch_resistance > 0.0f) // Ensure no division by zero
-                    {
-                        float branch_conductance = 1.0f / branch_resistance;
-                        conductance_sum += branch_conductance;
-                    }
-                    else
-                    {
-                        m_Console.PushMessage("Invalid branch resistance encountered: " + std::to_string(branch_resistance));
-                    }
-                }
-
-                if (conductance_sum > 0.0f)
-                {
-                    total += 1.0f / conductance_sum;
-                }
-                else
-                {
-                    m_Console.PushMessage("Parallel branch has no valid conductances.");
+                    terminal2_node = i;
+                    break;
                 }
             }
 
-            return total;
-        };
+            m_Console.PushMessage(resistor->GetName() + " connects nodes, " + std::to_string(terminal1_node) + " and " + std::to_string(terminal2_node));
+            float resistor_conductance = 1.0f / resistor->GetResistance();
 
-    float net_resistance = calculateResistance(vs_positive_terminal);
-    return net_resistance;
+            conduction_matrix(terminal1_node, terminal2_node) += -1.0f * resistor_conductance;
+            conduction_matrix(terminal2_node, terminal1_node) += -1.0f * resistor_conductance;
+            conduction_matrix(terminal1_node, terminal1_node) += resistor_conductance;
+            conduction_matrix(terminal2_node, terminal2_node) += resistor_conductance;
+        }
+    }
+
+    std::cout << conduction_matrix << std::endl;
+
+    Eigen::MatrixXf sub_matrix = conduction_matrix.block(0, 0, conduction_matrix.rows() - 1, conduction_matrix.cols() - 1);
+    Eigen::VectorXf test_current(sub_matrix.rows());
+    test_current.setZero();
+    test_current(0) = 1.0f;
+
+    Eigen::VectorXf result = sub_matrix.inverse() * test_current;
+    std::cout << result << std::endl;
+
+    return result(0);
 }
 
 void Simulation::Run()
 {
-    m_Circuit.LogWires();
+    float net_resistance = FindEquivalentResistance();
+    m_Console.PushMessage("Net resistance of circuit: " + std::to_string(net_resistance) + " Ohms");
+    
+    //m_Circuit.LogWires();
 
-    m_Console.PushMessage(std::to_string(CalculateNetResistance()));
+    //m_Console.PushMessage(std::to_string(CalculateNetResistance()));
 }
 
 void Simulation::LogResults() const
