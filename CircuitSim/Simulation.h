@@ -19,6 +19,12 @@
 
 #include "Eigen/Dense"
 
+struct DCSimData
+{
+    float SourceVoltage = 0.0f;
+    float SourceCurrent = 0.0f;
+};
+
 class Simulation
 {
 public:
@@ -28,26 +34,46 @@ public:
     void DrawSettingsCustomizer();
 
     void Run(); // Run the simulation
-    void LogResults() const; // Log terminal voltages
 
     void TestPlots()
     {
-        ImGui::Begin("Test plot");
-        static double xs2[1000], ys2[1000];
-        for (int i = 0; i < 1000; ++i) {
-            xs2[i] = i * 1 / 19.0f;
-            ys2[i] = xs2[i] * xs2[i];
+        ImGui::Begin("Simulation Data");
+
+        float data_points = m_DurationMicro / m_TimeStepMicro;
+        float* x_data = new float[data_points];
+        float* y_data1 = new float[data_points];
+        float* y_data2 = new float[data_points];
+
+        for (int i = 0; i < data_points; i++)
+        {
+            x_data[i]  = i * m_TimeStepMicro;
+            y_data1[i] = data.SourceVoltage;
+            y_data2[i] = data.SourceCurrent;
         }
-        if (ImPlot::BeginPlot("My Plot")) {
-            ImPlot::PlotLine("My Line Plot", xs2, ys2, 1000);
+
+        ImPlot::SetNextAxesToFit();
+        if (ImPlot::BeginPlot("Voltage")) {
+            ImPlot::PlotLine("Source Voltage", x_data, y_data1, data_points);
             ImPlot::EndPlot();
         }
+
+        ImPlot::SetNextAxesToFit();
+        if (ImPlot::BeginPlot("Current")) {
+            ImPlot::PlotLine("Source Current", x_data, y_data2, data_points);
+            ImPlot::EndPlot();
+        }
+
         ImGui::End();
+
+        delete[] x_data;
+        delete[] y_data1;
+        delete[] y_data2;
     }
 
-    float CalculateNetResistance() const;
-    float FindEquivalentResistance() const;
 private:
+    void logResults() const;
+    float findEquivalentResistance() const;
+
     const Circuit& m_Circuit;
     Console& m_Console;
     std::unordered_map<std::string, float> m_TerminalVoltages;
@@ -56,5 +82,7 @@ private:
 
     // Simulation Settings
     float m_DurationMicro = 1000.0f;
-    float m_TimeStepMicro = 5.0f;
+    float m_TimeStepMicro = 0.25f;
+
+    DCSimData data = { 0.0f, 0.0f };
 };

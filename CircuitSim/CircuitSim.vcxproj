@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Capacitor.cpp" />
     <ClCompile Include="Circuit.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="implot\implot.cpp" />
     <ClCompile Include="implot\implot_demo.cpp" />
     <ClCompile Include="implot\implot_items.cpp" />
+    <ClCompile Include="Inductor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Resistor.cpp" />
     <ClCompile Include="Simulation.cpp" />
@@ -177,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Capacitor.h" />
     <ClInclude Include="Circuit.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Console.h" />
@@ -191,6 +194,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="implot\implot.h" />
     <ClInclude Include="implot\implot_internal.h" />
+    <ClInclude Include="Inductor.h" />
     <ClInclude Include="math_helper.h" />
     <ClInclude Include="Resistor.h" />
     <ClInclude Include="Simulation.h" />
