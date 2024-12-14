@@ -10,3 +10,13 @@ I plan to use a better build system eventually, but for now install as follows:
 
 Disclaimer!
 This project was written and built inside of Visual Studio 2022, so be cautious when trying to clone and build in other versions!!!
+
+Current features:
+- Assemble a circuit that contains a DC voltage source, and resistors. Assemble any number of resistors you want in any manner you want.
+- Calculate the net resistance of the resistor network (Utilizes Eigen library to assemble a conduction matrix and injects a test current.)
+
+In the works:
+- Working on adding AC simulations.
+- Graphing of output voltages/currents.
+- Be able to delete components.
+- Addition of inductors and capacitors.
