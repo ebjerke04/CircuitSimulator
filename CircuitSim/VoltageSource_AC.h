@@ -14,6 +14,7 @@ public:
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
 
     const float& GetPeakVoltage() const { return m_PeakVoltage; }
+    const float& GetFrequency() const { return m_Frequency; }
     const std::shared_ptr<Terminal>& GetPositiveRefTerminal() const;
     const std::shared_ptr<Terminal>& GetNegativeRefTerminal() const;
 private:

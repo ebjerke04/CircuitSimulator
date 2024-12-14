@@ -127,8 +127,131 @@ float Simulation::findEquivalentResistance() const
     return result(0);
 }
 
+std::complex<float> Simulation::findEquivalentImpedance() const
+{
+    int wire_count = m_Circuit.GetWires().size();
+    Eigen::MatrixXcf admittance_matrix(wire_count, wire_count);
+    admittance_matrix.setZero();
+
+    Terminal* vs_positive_terminal = nullptr;
+    Terminal* vs_negative_terminal = nullptr;
+    float source_frequency = 0.0f;
+    for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
+    {
+        if (dynamic_cast<VoltageSource_AC*>(component.get())) {
+            VoltageSource_AC* voltage_source = static_cast<VoltageSource_AC*>(component.get());
+            vs_positive_terminal = voltage_source->GetPositiveRefTerminal().get();
+            vs_negative_terminal = voltage_source->GetNegativeRefTerminal().get();
+            source_frequency = voltage_source->GetFrequency();
+            break;
+        }
+    }
+
+    std::vector<Wire*> wires_ordered;
+    Wire* source_node = m_Circuit.GetWiringManager()->GetWireAtTerminal(vs_positive_terminal);
+    Wire* ground_node = m_Circuit.GetWiringManager()->GetWireAtTerminal(vs_negative_terminal);
+    wires_ordered.push_back(source_node);
+
+    for (const std::unique_ptr<Wire>& wire : m_Circuit.GetWires())
+    {
+        Wire* wire_raw = wire.get();
+        auto it = std::find(wires_ordered.begin(), wires_ordered.end(), wire_raw);
+
+        if (it != wires_ordered.end())
+        {
+            continue;
+        }
+        if (wire_raw == ground_node) continue;
+        if (wire_raw == source_node) continue;
+
+        wires_ordered.push_back(wire_raw);
+    }
+    wires_ordered.push_back(ground_node);
+
+    for (Wire* wire : wires_ordered)
+    {
+        wire->LogWire();
+    }
+
+    for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
+    {
+        std::complex<float> impedance = std::complex<float>(0.0f, 0.0f);
+        if (dynamic_cast<Resistor*>(component.get()))
+        {
+            Resistor* resistor = static_cast<Resistor*>(component.get());
+            impedance = std::complex<float>(resistor->GetResistance(), 0.0f);
+        }
+        else if (dynamic_cast<Inductor*>(component.get()))
+        {
+            Inductor* inductor = static_cast<Inductor*>(component.get());
+            float inductor_component = 2 * IM_PI * source_frequency * inductor->GetInductanceMicro() * pow(10, -6);
+            impedance = std::complex<float>(0.0f, inductor_component);
+        }
+        else if (dynamic_cast<Capacitor*>(component.get()))
+        {
+            Capacitor* capacitor = static_cast<Capacitor*>(component.get());
+            float capacitor_component = -1.0f / (2 * IM_PI * source_frequency * capacitor->GetCapacitanceMicro() * pow(10, -6));
+            impedance = std::complex<float>(0.0f, capacitor_component);
+        }
+        else
+        {
+            continue;
+        }
+
+        Terminal* terminal1 = component->GetTerminals()[0].get();
+        Terminal* terminal2 = component->GetTerminals()[1].get();
+        Wire* terminal1_wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(terminal1);
+        Wire* terminal2_wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(terminal2);
+
+        if (terminal1_wire == nullptr || terminal2_wire == nullptr) continue;
+
+        int terminal1_node = 999;
+        int terminal2_node = 999;
+        for (int i = 0; i < wires_ordered.size(); i++)
+        {
+            Wire* wire = wires_ordered[i];
+            if (terminal1_wire == wire)
+            {
+                terminal1_node = i;
+                break;
+            }
+        }
+        for (int i = 0; i < wires_ordered.size(); i++)
+        {
+            Wire* wire = wires_ordered[i];
+            if (terminal2_wire == wire)
+            {
+                terminal2_node = i;
+                break;
+            }
+        }
+
+        m_Console.PushMessage(component->GetName() + " connects nodes, " + std::to_string(terminal1_node) + " and " + std::to_string(terminal2_node));
+        std::complex<float> admittance = 1.0f / impedance;
+
+        admittance_matrix(terminal1_node, terminal2_node) += -1.0f * admittance;
+        admittance_matrix(terminal2_node, terminal1_node) += -1.0f * admittance;
+        admittance_matrix(terminal1_node, terminal1_node) += admittance;
+        admittance_matrix(terminal2_node, terminal2_node) += admittance;
+    }
+
+    std::cout << admittance_matrix << std::endl;
+
+    Eigen::MatrixXcf sub_matrix = admittance_matrix.block(0, 0, admittance_matrix.rows() - 1, admittance_matrix.cols() - 1);
+
+    Eigen::VectorXcf test_current(sub_matrix.rows());
+    test_current.setZero();
+    test_current(0) = std::complex(1.0f, 0.0f);
+
+    Eigen::VectorXcf result = sub_matrix.colPivHouseholderQr().solve(test_current);
+    std::cout << result << std::endl;
+
+    return result(0);
+}
+
 void Simulation::Run()
 {
+    /*
     float source_voltage = 0.0f;
     for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
     {
@@ -150,6 +273,9 @@ void Simulation::Run()
     //m_Circuit.LogWires();
 
     //m_Console.PushMessage(std::to_string(CalculateNetResistance()));
+    */
+
+    findEquivalentImpedance();
 }
 
 void Simulation::logResults() const

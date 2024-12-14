@@ -13,7 +13,7 @@ public:
     void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode);
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
 
-    const float& GetCapacitanceMicro() const { return m_InductanceMicro; }
+    const float& GetInductanceMicro() const { return m_InductanceMicro; }
 private:
     void drawEditMenu();
 

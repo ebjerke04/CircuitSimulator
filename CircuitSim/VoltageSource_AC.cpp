@@ -2,8 +2,8 @@
 
 VoltageSource_AC::VoltageSource_AC(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : Component(gridPosition, name, circuit)
 {
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "POS", this));
-	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, 3), "NEG", this));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "AC_POS", this));
+	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, 3), "AC_NEG", this));
 }
 
 void VoltageSource_AC::HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode)

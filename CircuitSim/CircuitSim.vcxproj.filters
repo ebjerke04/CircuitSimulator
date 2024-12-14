@@ -19,6 +19,12 @@
     <Filter Include="Source Files\implot">
       <UniqueIdentifier>{dd137c5b-cf21-4bb4-b2c9-0b76d9b84c01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\components">
+      <UniqueIdentifier>{3b77b11c-9f77-49fc-89f0-afdef1aafb34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\components">
+      <UniqueIdentifier>{77aad8c0-2200-46a8-b57f-5bc5950285fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,19 +54,10 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VoltageSource_DC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Circuit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Terminal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Resistor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Wire.cpp">
@@ -81,17 +78,26 @@
     <ClCompile Include="implot\implot.cpp">
       <Filter>Source Files\implot</Filter>
     </ClCompile>
-    <ClCompile Include="VoltageSource_AC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Capacitor.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Files\components</Filter>
     </ClCompile>
     <ClCompile Include="Inductor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
+    <ClCompile Include="Capacitor.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
+    <ClCompile Include="VoltageSource_DC.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
+    <ClCompile Include="VoltageSource_AC.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
+    <ClCompile Include="Resistor.cpp">
+      <Filter>Source Files\components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,13 +139,7 @@
     <ClInclude Include="imgui\imconfig.h">
       <Filter>Source Files\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VoltageSource_DC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Circuit.h">
@@ -149,9 +149,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="math_helper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resistor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wire.h">
@@ -169,17 +166,26 @@
     <ClInclude Include="implot\implot.h">
       <Filter>Source Files\implot</Filter>
     </ClInclude>
-    <ClInclude Include="VoltageSource_AC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VoltageSource_DC.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="VoltageSource_AC.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
     <ClInclude Include="Capacitor.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\components</Filter>
     </ClInclude>
     <ClInclude Include="Inductor.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="Resistor.h">
+      <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

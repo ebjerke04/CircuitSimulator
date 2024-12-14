@@ -9,10 +9,13 @@
 #include <unordered_map>
 #include <stdexcept>
 #include <functional>
+#include <complex>
 
 #include "Resistor.h"
 #include "VoltageSource_DC.h"
 #include "VoltageSource_AC.h"
+#include "Capacitor.h"
+#include "Inductor.h"
 #include "Console.h"
 
 #include "implot/implot.h"
@@ -72,7 +75,13 @@ public:
 
 private:
     void logResults() const;
+    
+    // only works for resistor only circuits connected to VoltageSource_DC.
+    // this configuration is set up pretty much as a proof of concept for the resistance solving algorithm.
+    // we be made more modular in the future.
     float findEquivalentResistance() const;
+
+    std::complex<float> findEquivalentImpedance() const;
 
     const Circuit& m_Circuit;
     Console& m_Console;
