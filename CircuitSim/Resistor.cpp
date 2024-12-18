@@ -75,7 +75,7 @@ void Resistor::drawEditMenu()
 	std::string window_name = std::string("Resistor (").append(m_Name).append(")");
 	ImGui::Begin(window_name.c_str(), &m_DrawEditMenu);
 
-	ImGui::SliderFloat("Resistance", &m_Resistance, 0.0f, 10000.0f, "%.1f Ohm");
+	ImGui::InputFloat("Resistance", &m_Resistance, 0.01f, 0.0f);
 
 	ImGui::End();
 }

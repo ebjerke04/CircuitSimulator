@@ -127,7 +127,7 @@ float Simulation::findEquivalentResistance() const
     return result(0);
 }
 
-std::complex<float> Simulation::findEquivalentImpedance() const
+std::complex<float> Simulation::findEquivalentImpedance() const //TODO : Comment steps...
 {
     int wire_count = m_Circuit.GetWires().size();
     Eigen::MatrixXcf admittance_matrix(wire_count, wire_count);
@@ -235,54 +235,55 @@ std::complex<float> Simulation::findEquivalentImpedance() const
         admittance_matrix(terminal2_node, terminal2_node) += admittance;
     }
 
-    std::cout << admittance_matrix << std::endl;
-
     Eigen::MatrixXcf sub_matrix = admittance_matrix.block(0, 0, admittance_matrix.rows() - 1, admittance_matrix.cols() - 1);
+    std::cout << "----------- Admittance matrix minus ground node -----------" << std::endl;
+    std::cout << sub_matrix << std::endl;
+    std::cout << "-----------------------------------------------------------" << std::endl;
 
     Eigen::VectorXcf test_current(sub_matrix.rows());
     test_current.setZero();
     test_current(0) = std::complex(1.0f, 0.0f);
 
     Eigen::VectorXcf result = sub_matrix.colPivHouseholderQr().solve(test_current);
+    std::cout << "----------- Impedance vector -----------" << std::endl;
     std::cout << result << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
 
     return result(0);
 }
 
 void Simulation::Run()
 {
-    /*
-    float source_voltage = 0.0f;
+    m_Circuit.LogWires();
+
+    std::complex<float> net_impedance = findEquivalentImpedance();
+    m_Console.PushMessage("Net impedance seen by source: " + std::to_string(net_impedance.real()) + " + j(" + std::to_string(net_impedance.imag()) + ")");
+
+    int data_points = m_DurationMicro / m_TimeStepMicro;
+
+    float source_peak = 0.0f;
+    float source_frequency = 0.0f;
+    Terminal* voltage_positive = nullptr;
     for (const std::unique_ptr<Component>& component : m_Circuit.GetComponents())
     {
-        if (dynamic_cast<VoltageSource_DC*>(component.get()))
-        {
-            VoltageSource_DC* voltage_source = static_cast<VoltageSource_DC*>(component.get());
-            source_voltage = voltage_source->GetVoltage();
+        if (dynamic_cast<VoltageSource_AC*>(component.get())) {
+            VoltageSource_AC* voltage_source = static_cast<VoltageSource_AC*>(component.get());
+            source_peak = voltage_source->GetPeakVoltage();
+            source_frequency = voltage_source->GetFrequency();
+            voltage_positive = voltage_source->GetNegativeRefTerminal().get();
             break;
         }
     }
 
-    float net_resistance = findEquivalentResistance();
-    float source_current = source_voltage / net_resistance;
-
-    m_Console.PushMessage("Net resistance of circuit: " + std::to_string(net_resistance) + " Ohms");
-    
-    data.SourceVoltage = source_voltage;
-    data.SourceCurrent = source_current;
-    //m_Circuit.LogWires();
-
-    //m_Console.PushMessage(std::to_string(CalculateNetResistance()));
-    */
-
-    findEquivalentImpedance();
-}
-
-void Simulation::logResults() const
-{
-    std::cout << "Simulation Results:" << std::endl;
-    for (const auto& [terminalName, voltage] : m_TerminalVoltages)
+    std::vector<SimulationDataPoint> source_voltages;
+    for (int i = 0; i < data_points; i++)
     {
-        std::cout << "Terminal " << terminalName << ": " << voltage << " V" << std::endl;
+        float time_micro = i * m_TimeStepMicro;
+        float voltage = source_peak * sinf(2 * IM_PI * source_frequency * time_micro * pow(10, -6));
+        source_voltages.push_back({ time_micro, voltage });
     }
+
+    Wire* wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(voltage_positive);
+    SimulationDataset source_data = { "Source Voltage", source_voltages };
+    m_NodeVoltages.insert({ wire, source_data });
 }

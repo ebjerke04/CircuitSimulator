@@ -93,7 +93,7 @@ void Inductor::drawEditMenu()
 	std::string window_name = std::string("Inductor (").append(m_Name).append(")");
 	ImGui::Begin(window_name.c_str(), &m_DrawEditMenu);
 
-	ImGui::SliderFloat("Inductance", &m_InductanceMicro, 0.01f, 20.0f, "%.1f uH");
+	ImGui::SliderFloat("Inductance", &m_InductanceMicro, 0.01f, 100.0f, "%.1f uH");
 
 	ImGui::End();
 }

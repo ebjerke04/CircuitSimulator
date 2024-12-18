@@ -5,7 +5,6 @@
 #include <iostream>
 #include <queue>
 #include <map>
-#include <vector>
 #include <unordered_map>
 #include <stdexcept>
 #include <functional>
@@ -22,10 +21,16 @@
 
 #include "Eigen/Dense"
 
-struct DCSimData
+struct SimulationDataPoint
 {
-    float SourceVoltage = 0.0f;
-    float SourceCurrent = 0.0f;
+    float TimeMicro;
+    float Value;
+};
+
+struct SimulationDataset
+{
+    const char* MeasurementName;
+    std::vector<SimulationDataPoint> Data;
 };
 
 class Simulation
@@ -42,40 +47,38 @@ public:
     {
         ImGui::Begin("Simulation Data");
 
-        float data_points = m_DurationMicro / m_TimeStepMicro;
-        float* x_data = new float[data_points];
-        float* y_data1 = new float[data_points];
-        float* y_data2 = new float[data_points];
+        float points = m_DurationMicro / m_TimeStepMicro;
+        float* x_data = new float[points];
+        float* y_data = new float[points];
 
-        for (int i = 0; i < data_points; i++)
+        for (const auto& pair : m_NodeVoltages)
         {
-            x_data[i]  = i * m_TimeStepMicro;
-            y_data1[i] = data.SourceVoltage;
-            y_data2[i] = data.SourceCurrent;
+            for (int i = 0; i < points; i++)
+            {
+                x_data[i] = pair.second.Data[i].TimeMicro;
+                y_data[i] = pair.second.Data[i].Value;
+            }
         }
 
         ImPlot::SetNextAxesToFit();
         if (ImPlot::BeginPlot("Voltage")) {
-            ImPlot::PlotLine("Source Voltage", x_data, y_data1, data_points);
+            ImPlot::PlotLine("Source Voltage", x_data, y_data, points);
             ImPlot::EndPlot();
         }
 
-        ImPlot::SetNextAxesToFit();
+        //ImPlot::SetNextAxesToFit();
         if (ImPlot::BeginPlot("Current")) {
-            ImPlot::PlotLine("Source Current", x_data, y_data2, data_points);
+            //ImPlot::PlotLine("Source Current", x_data, y_data2, data_points);
             ImPlot::EndPlot();
         }
 
         ImGui::End();
 
         delete[] x_data;
-        delete[] y_data1;
-        delete[] y_data2;
+        delete[] y_data;
     }
 
 private:
-    void logResults() const;
-    
     // only works for resistor only circuits connected to VoltageSource_DC.
     // this configuration is set up pretty much as a proof of concept for the resistance solving algorithm.
     // we be made more modular in the future.
@@ -85,13 +88,11 @@ private:
 
     const Circuit& m_Circuit;
     Console& m_Console;
-    std::unordered_map<std::string, float> m_TerminalVoltages;
+    std::unordered_map<const Wire*, SimulationDataset> m_NodeVoltages;
 
     bool m_DrawSettings = false;
 
     // Simulation Settings
-    float m_DurationMicro = 1000.0f;
-    float m_TimeStepMicro = 0.25f;
-
-    DCSimData data = { 0.0f, 0.0f };
+    float m_DurationMicro = 20.0f;
+    float m_TimeStepMicro = 0.001;
 };

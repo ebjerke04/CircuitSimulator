@@ -80,7 +80,7 @@ void Capacitor::drawEditMenu()
 	std::string window_name = std::string("Capacitor (").append(m_Name).append(")");
 	ImGui::Begin(window_name.c_str(), &m_DrawEditMenu);
 
-	ImGui::SliderFloat("Capacitance", &m_CapacitanceMicro, 0.01f, 20.0f, "%.1f uF");
+	ImGui::SliderFloat("Capacitance", &m_CapacitanceMicro, 0.01f, 100.0f, "%.1f uF");
 
 	ImGui::End();
 }

@@ -21,6 +21,6 @@ private:
     void drawEditMenu();
 
     float m_PeakVoltage = 5.0f;
-    float m_Frequency = 1000.0f;
+    float m_Frequency = 100000.0f;
 };
 
