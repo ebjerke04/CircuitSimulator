@@ -16,6 +16,6 @@ public:
 private:
     void drawEditMenu();
 
-    float m_Resistance = 1000.0f;
+    float m_Resistance = 100.0f;
 };
 

@@ -24,13 +24,22 @@
 struct SimulationDataPoint
 {
     float TimeMicro;
-    float Value;
+    std::complex<float> Value;
 };
 
 struct SimulationDataset
 {
-    const char* MeasurementName;
+    SimulationDataset(const std::string& measurementName) : MeasurementName(measurementName)
+    { }
+
+    std::string MeasurementName;
     std::vector<SimulationDataPoint> Data;
+};
+
+struct AdmittanceMatrixAndWires
+{
+    std::vector<Wire*> Wires;
+    Eigen::MatrixXcf Admittances;
 };
 
 class Simulation
@@ -50,27 +59,37 @@ public:
         float points = m_DurationMicro / m_TimeStepMicro;
         float* x_data = new float[points];
         float* y_data = new float[points];
-
-        for (const auto& pair : m_NodeVoltages)
+        
+        if (m_AdjustAxis)
         {
-            for (int i = 0; i < points; i++)
-            {
-                x_data[i] = pair.second.Data[i].TimeMicro;
-                y_data[i] = pair.second.Data[i].Value;
-            }
+            ImPlot::SetNextAxesToFit();
+            m_AdjustAxis = false;
         }
-
-        ImPlot::SetNextAxesToFit();
+        
         if (ImPlot::BeginPlot("Voltage")) {
-            ImPlot::PlotLine("Source Voltage", x_data, y_data, points);
+
+            for (const auto& pair : m_NodeVoltages)
+            {
+                for (int i = 0; i < points; i++)
+                {
+                    x_data[i] = pair.second.Data[i].TimeMicro;
+
+                    std::complex<float> value_complex = pair.second.Data[i].Value;
+
+                    y_data[i] = std::real(value_complex);
+                }
+                ImPlot::PlotLine(pair.second.MeasurementName.c_str(), x_data, y_data, points);
+            }
+
             ImPlot::EndPlot();
         }
+        
 
         //ImPlot::SetNextAxesToFit();
-        if (ImPlot::BeginPlot("Current")) {
+        //if (ImPlot::BeginPlot("Current")) {
             //ImPlot::PlotLine("Source Current", x_data, y_data2, data_points);
-            ImPlot::EndPlot();
-        }
+            //ImPlot::EndPlot();
+        //}
 
         ImGui::End();
 
@@ -84,15 +103,16 @@ private:
     // we be made more modular in the future.
     float findEquivalentResistance() const;
 
-    std::complex<float> findEquivalentImpedance() const;
+    AdmittanceMatrixAndWires findAdmittanceMatrixAndWires() const;
 
     const Circuit& m_Circuit;
     Console& m_Console;
     std::unordered_map<const Wire*, SimulationDataset> m_NodeVoltages;
 
     bool m_DrawSettings = false;
+    bool m_AdjustAxis = false;
 
     // Simulation Settings
-    float m_DurationMicro = 20.0f;
-    float m_TimeStepMicro = 0.001;
+    float m_DurationMicro = 100.0f;
+    float m_TimeStepMicro = 0.01;
 };

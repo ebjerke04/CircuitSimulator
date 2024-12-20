@@ -127,7 +127,7 @@ float Simulation::findEquivalentResistance() const
     return result(0);
 }
 
-std::complex<float> Simulation::findEquivalentImpedance() const //TODO : Comment steps...
+AdmittanceMatrixAndWires Simulation::findAdmittanceMatrixAndWires() const //TODO : Comment steps...
 {
     int wire_count = m_Circuit.GetWires().size();
     Eigen::MatrixXcf admittance_matrix(wire_count, wire_count);
@@ -240,24 +240,12 @@ std::complex<float> Simulation::findEquivalentImpedance() const //TODO : Comment
     std::cout << sub_matrix << std::endl;
     std::cout << "-----------------------------------------------------------" << std::endl;
 
-    Eigen::VectorXcf test_current(sub_matrix.rows());
-    test_current.setZero();
-    test_current(0) = std::complex(1.0f, 0.0f);
-
-    Eigen::VectorXcf result = sub_matrix.colPivHouseholderQr().solve(test_current);
-    std::cout << "----------- Impedance vector -----------" << std::endl;
-    std::cout << result << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-
-    return result(0);
+    return { wires_ordered, sub_matrix };
 }
 
 void Simulation::Run()
 {
     m_Circuit.LogWires();
-
-    std::complex<float> net_impedance = findEquivalentImpedance();
-    m_Console.PushMessage("Net impedance seen by source: " + std::to_string(net_impedance.real()) + " + j(" + std::to_string(net_impedance.imag()) + ")");
 
     int data_points = m_DurationMicro / m_TimeStepMicro;
 
@@ -270,20 +258,51 @@ void Simulation::Run()
             VoltageSource_AC* voltage_source = static_cast<VoltageSource_AC*>(component.get());
             source_peak = voltage_source->GetPeakVoltage();
             source_frequency = voltage_source->GetFrequency();
-            voltage_positive = voltage_source->GetNegativeRefTerminal().get();
+            voltage_positive = voltage_source->GetPositiveRefTerminal().get();
             break;
         }
     }
 
+    AdmittanceMatrixAndWires admittance_matrix = findAdmittanceMatrixAndWires();
+    Eigen::VectorXcf test_current(admittance_matrix.Admittances.rows());
+    test_current.setZero();
+    test_current(0) = std::complex(1.0f, 0.0f);
+
+    Eigen::VectorXcf node_impedances = admittance_matrix.Admittances.colPivHouseholderQr().solve(test_current);
+    std::cout << "----------- Impedance vector -----------" << std::endl;
+    std::cout << node_impedances << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+
+    Wire* source_node = m_Circuit.GetWiringManager()->GetWireAtTerminal(voltage_positive);
+    std::complex<float> net_impedance = node_impedances(0);
+    m_Console.PushMessage("Net impedance seen by source: " + std::to_string(net_impedance.real()) + " + j(" + std::to_string(net_impedance.imag()) + ")");
+
     std::vector<SimulationDataPoint> source_voltages;
+
+    for (int i = 0; i < admittance_matrix.Wires.size() - 1; i++)
+    {
+        m_NodeVoltages.insert({ admittance_matrix.Wires[i], SimulationDataset(admittance_matrix.Wires[i]->GetName())});
+    }
+
     for (int i = 0; i < data_points; i++)
     {
         float time_micro = i * m_TimeStepMicro;
-        float voltage = source_peak * sinf(2 * IM_PI * source_frequency * time_micro * pow(10, -6));
-        source_voltages.push_back({ time_micro, voltage });
+        //float source_voltage = source_peak * sinf(2 * IM_PI * source_frequency * time_micro * pow(10, -6));
+        std::complex<float> source_voltage = std::polar(source_peak, 2.0f * IM_PI * source_frequency * time_micro * powf(10, -6));
+
+        std::complex<float> source_current = source_voltage / net_impedance;
+        Eigen::VectorXcf injected_current(admittance_matrix.Admittances.rows());
+        injected_current.setZero();
+        injected_current(0) = source_current;
+        Eigen::VectorXcf node_voltages = admittance_matrix.Admittances.colPivHouseholderQr().solve(injected_current);
+        
+        for (int i = 0; i < admittance_matrix.Wires.size() - 1; i++)
+        {
+            const Wire* wire = admittance_matrix.Wires[i];
+            std::complex<float> point = node_voltages(i);
+            m_NodeVoltages.at(wire).Data.push_back({ time_micro, point });
+        }
     }
 
-    Wire* wire = m_Circuit.GetWiringManager()->GetWireAtTerminal(voltage_positive);
-    SimulationDataset source_data = { "Source Voltage", source_voltages };
-    m_NodeVoltages.insert({ wire, source_data });
+    m_AdjustAxis = true;
 }

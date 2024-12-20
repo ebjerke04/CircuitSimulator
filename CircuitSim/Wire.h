@@ -18,6 +18,7 @@ public:
 	void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom, ImU32 color);
 
 	const std::vector<std::shared_ptr<Terminal>>& GetConnectedTerminals() const { return m_ConnectedTerminals; }
+	const std::string GetName() const;
 private:
 	std::vector<std::shared_ptr<Terminal>> m_ConnectedTerminals;
 };

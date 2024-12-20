@@ -69,3 +69,19 @@ void Wire::Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, floa
         }
     }
 }
+
+const std::string Wire::GetName() const
+{
+    std::string name = "";
+    for (const std::shared_ptr<Terminal>& connectedTerminal : m_ConnectedTerminals)
+    {
+        name += connectedTerminal->GetName();
+        if (connectedTerminal == m_ConnectedTerminals.back())
+        {
+            break;
+        }
+        name += ",";
+    }
+
+    return name;
+}

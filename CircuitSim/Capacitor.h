@@ -17,6 +17,6 @@ public:
 private:
     void drawEditMenu();
 
-    float m_CapacitanceMicro = 100.0f;
+    float m_CapacitanceMicro = 0.01f;
 };
 

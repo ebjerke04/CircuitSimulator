@@ -46,12 +46,12 @@ Application::Application() : m_Window(nullptr)
 
     circuit.PushComponent(std::make_unique<VoltageSource_AC>(ImVec2(20.0f, 20.0f), "V1", circuit));
     circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 16.0f), "R1", circuit));
-    //circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
-    //circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
+    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
     //circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
     circuit.PushComponent(std::make_unique<Capacitor>(ImVec2(31.0f, 16.0f), "C1", circuit));
     circuit.PushComponent(std::make_unique<Inductor>(ImVec2(31.0f, 24.0f), "L1", circuit));
-    //circuit.PushComponent(std::make_unique<Inductor>(ImVec2(34.0f, 16.0f), "L2", circuit));
+    circuit.PushComponent(std::make_unique<Inductor>(ImVec2(34.0f, 16.0f), "L2", circuit));
     circuit.PushComponent(std::make_unique<Capacitor>(ImVec2(34.0f, 24.0f), "C2", circuit));
 
     m_Simulation = std::make_unique<Simulation>(circuit, m_Console);
