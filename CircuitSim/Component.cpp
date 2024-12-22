@@ -1,10 +1,10 @@
 #include "Component.h"
 #include "Application.h"
+#include "Circuit.h"
 
-Component::Component(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : m_Circuit(circuit)
+Component::Component(const ImVec2& gridPosition, Circuit& circuit) : m_Circuit(circuit)
 {
 	m_GridPosition = gridPosition;
-	m_Name = name;
 }
 
 ImVec2 Component::GridPosToCanvasPos(const ImVec2& gridPos, const ImVec2& offset, float gridSize, float zoom)

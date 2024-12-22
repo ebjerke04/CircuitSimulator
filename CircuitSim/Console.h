@@ -12,9 +12,8 @@ public:
 
 	void Clear() { m_Messages.clear(); }
 	void PushMessage(const std::string& message);
-	void Draw(bool* consoleOpen);
+	void Draw();
 private:
 	std::vector<std::string> m_Messages;
 	bool m_ScrollToBottom = false;
 };
-

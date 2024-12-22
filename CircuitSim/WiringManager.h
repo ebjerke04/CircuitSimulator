@@ -20,4 +20,3 @@ private:
 
 	std::unique_ptr<Wire> m_CurrentWire;
 };
-

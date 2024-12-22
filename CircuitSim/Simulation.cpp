@@ -245,6 +245,7 @@ AdmittanceMatrixAndWires Simulation::findAdmittanceMatrixAndWires() const //TODO
 
 void Simulation::Run()
 {
+    m_NodeVoltages.clear();
     m_Circuit.LogWires();
 
     int data_points = m_DurationMicro / m_TimeStepMicro;

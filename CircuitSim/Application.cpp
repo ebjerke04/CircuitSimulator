@@ -44,16 +44,6 @@ Application::Application() : m_Window(nullptr)
     ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    circuit.PushComponent(std::make_unique<VoltageSource_AC>(ImVec2(20.0f, 20.0f), "V1", circuit));
-    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 16.0f), "R1", circuit));
-    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 16.0f), "R2", circuit));
-    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(25.0f, 24.0f), "R3", circuit));
-    //circuit.PushComponent(std::make_unique<Resistor>(ImVec2(28.0f, 24.0f), "R4", circuit));
-    circuit.PushComponent(std::make_unique<Capacitor>(ImVec2(31.0f, 16.0f), "C1", circuit));
-    circuit.PushComponent(std::make_unique<Inductor>(ImVec2(31.0f, 24.0f), "L1", circuit));
-    circuit.PushComponent(std::make_unique<Inductor>(ImVec2(34.0f, 16.0f), "L2", circuit));
-    circuit.PushComponent(std::make_unique<Capacitor>(ImVec2(34.0f, 24.0f), "C2", circuit));
-
     m_Simulation = std::make_unique<Simulation>(circuit, m_Console);
 }
 
@@ -157,9 +147,9 @@ void Application::drawMenuBar()
         {
             if (ImGui::BeginMenu("Sources"))
             {
-                if (ImGui::MenuItem("DC Voltage Source"))
+                if (ImGui::MenuItem("AC Voltage Source"))
                 {
-                    circuit.PushComponent(std::make_unique<VoltageSource_DC>(ImVec2(40.0f, 40.0f), "V2", circuit));
+                    circuit.PushComponent(std::make_unique<VoltageSource_AC>(ImVec2(40.0f, 40.0f), circuit));
                 }
                 ImGui::EndMenu();
             }
@@ -168,7 +158,15 @@ void Application::drawMenuBar()
             {
                 if (ImGui::MenuItem("Resistor"))
                 {
-                    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(35.0f, 35.0f), "R3", circuit));
+                    circuit.PushComponent(std::make_unique<Resistor>(ImVec2(40.0f, 40.0f), circuit));
+                }
+                if (ImGui::MenuItem("Inductor"))
+                {
+                    circuit.PushComponent(std::make_unique<Inductor>(ImVec2(40.0f, 40.0f), circuit));
+                }
+                if (ImGui::MenuItem("Capacitor"))
+                {
+                    circuit.PushComponent(std::make_unique<Capacitor>(ImVec2(40.0f, 40.0f), circuit));
                 }
                 ImGui::EndMenu();
             }
@@ -293,12 +291,31 @@ void Application::handleImGui()
     static bool initialized = false;
     if (!initialized)
     {
-        initialized = true;
         ImGui::DockBuilderRemoveNode(dockspace_id);
         ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+
         ImGuiID dock_main_id = dockspace_id;
+        ImGuiID dock_right_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.15f, nullptr, &dock_main_id);
+        ImGuiID dock_bottom_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.4f, nullptr, &dock_main_id);
+
         ImGui::DockBuilderDockWindow("Canvas", dock_main_id);
+        ImGui::DockBuilderDockWindow("Console", dock_right_id);
+        ImGui::DockBuilderDockWindow("Plots", dock_bottom_id);
+
         ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+
+        ImGuiDockNode* right_node = ImGui::DockBuilderGetNode(dock_right_id);
+        if (right_node)
+        {
+            right_node->SizeRef = ImVec2(viewport->WorkSize.x * 0.15, viewport->WorkSize.y);
+        }
+
+        ImGuiDockNode* bottom_node = ImGui::DockBuilderGetNode(dock_bottom_id);
+        if (bottom_node)
+        {
+            bottom_node->SizeRef = ImVec2(viewport->WorkSize.x, viewport->WorkSize.y * 0.4f); // Dynamically adjust size
+        }
+        
         ImGui::DockBuilderFinish(dock_main_id);
     }
 
@@ -312,11 +329,19 @@ void Application::handleImGui()
 
     ImGui::End();
     
-    m_Console.Draw(&m_DrawConsole);
+    ImGui::Begin("Plots");
+    m_Simulation->TestPlots();
+    ImGui::End();
+    
+    ImGui::Begin("Console", &m_DrawConsole);
+    m_Console.Draw();
+    ImGui::End();
+
     drawViewCustomizer();
 
     m_Simulation->DrawSettingsCustomizer();
-    m_Simulation->TestPlots();
+
+    initialized = true;
 }
 
 void Application::cleanup() 
@@ -337,4 +362,3 @@ void Application::error_callback(int error, const char* description)
 {
     std::cerr << "Error: " << description << std::endl;
 }
-    

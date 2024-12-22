@@ -8,7 +8,7 @@ class VoltageSource_AC :
     public Component
 {
 public:
-    VoltageSource_AC(const ImVec2& gridPositon, const std::string& name, Circuit& circuit);
+    VoltageSource_AC(const ImVec2& gridPositon, Circuit& circuit);
 
     void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode);
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
@@ -23,4 +23,3 @@ private:
     float m_PeakVoltage = 5.0f;
     float m_Frequency = 100000.0f;
 };
-

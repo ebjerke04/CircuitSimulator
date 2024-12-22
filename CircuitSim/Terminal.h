@@ -28,4 +28,3 @@ private:
 	const ImVec2 m_OriginalDeltaGridPosition;
 	ImVec2 m_DeltaGridPosition;
 };
-

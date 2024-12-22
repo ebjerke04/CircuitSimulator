@@ -1,7 +1,10 @@
 #include "Capacitor.h"
 
-Capacitor::Capacitor(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : Component(gridPosition, name, circuit)
+Capacitor::Capacitor(const ImVec2& gridPosition, Circuit& circuit) : Component(gridPosition, circuit)
 {
+	std::string name = circuit.findAvailableName<Capacitor>();
+	setName(name);
+
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), name + "_1", this));
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, 3), name + "_2", this));
 }

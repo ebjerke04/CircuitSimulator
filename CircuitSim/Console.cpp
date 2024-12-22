@@ -8,10 +8,8 @@ void Console::PushMessage(const std::string& message)
 	m_ScrollToBottom = true;
 }
 
-void Console::Draw(bool* consoleOpen)
+void Console::Draw()
 {
-	ImGui::Begin("Console", consoleOpen);
-
 	if (ImGui::Button("Clear"))
 	{
 		Clear();
@@ -40,6 +38,4 @@ void Console::Draw(bool* consoleOpen)
 		m_ScrollToBottom = false;
 	}
 	ImGui::EndChild();
-
-	ImGui::End();
 }

@@ -8,7 +8,7 @@ class Capacitor :
     public Component
 {
 public:
-    Capacitor(const ImVec2& gridPositon, const std::string& name, Circuit& circuit);
+    Capacitor(const ImVec2& gridPositon, Circuit& circuit);
 
     void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode);
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
@@ -19,4 +19,3 @@ private:
 
     float m_CapacitanceMicro = 0.01f;
 };
-

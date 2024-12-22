@@ -1,7 +1,10 @@
 #include "VoltageSource_AC.h"
 
-VoltageSource_AC::VoltageSource_AC(const ImVec2& gridPosition, const std::string& name, Circuit& circuit) : Component(gridPosition, name, circuit)
+VoltageSource_AC::VoltageSource_AC(const ImVec2& gridPosition, Circuit& circuit) : Component(gridPosition, circuit)
 {
+	std::string name = circuit.findAvailableName<VoltageSource_AC>();
+	setName(name);
+
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, -3), "AC_POS", this));
 	m_Terminals.push_back(std::make_unique<Terminal>(ImVec2(0, 3), "AC_NEG", this));
 }

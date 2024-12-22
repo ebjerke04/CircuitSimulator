@@ -7,7 +7,7 @@ class Resistor :
     public Component
 {
 public:
-    Resistor(const ImVec2& gridPositon, const std::string& name, Circuit& circuit);
+    Resistor(const ImVec2& gridPositon, Circuit& circuit);
 
     void HandleInput(const ImVec2& offset, float gridSize, float zoom, int opMode);
     void Draw(ImDrawList* drawList, const ImVec2& offset, float gridSize, float zoom) override;
@@ -18,4 +18,3 @@ private:
 
     float m_Resistance = 100.0f;
 };
-

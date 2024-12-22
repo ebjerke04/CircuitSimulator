@@ -54,8 +54,6 @@ public:
 
     void TestPlots()
     {
-        ImGui::Begin("Simulation Data");
-
         float points = m_DurationMicro / m_TimeStepMicro;
         float* x_data = new float[points];
         float* y_data = new float[points];
@@ -83,20 +81,10 @@ public:
 
             ImPlot::EndPlot();
         }
-        
-
-        //ImPlot::SetNextAxesToFit();
-        //if (ImPlot::BeginPlot("Current")) {
-            //ImPlot::PlotLine("Source Current", x_data, y_data2, data_points);
-            //ImPlot::EndPlot();
-        //}
-
-        ImGui::End();
 
         delete[] x_data;
         delete[] y_data;
     }
-
 private:
     // only works for resistor only circuits connected to VoltageSource_DC.
     // this configuration is set up pretty much as a proof of concept for the resistance solving algorithm.
