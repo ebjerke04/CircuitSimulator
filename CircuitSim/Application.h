@@ -6,6 +6,7 @@
 #include "Resistor.h"
 #include "Capacitor.h"
 #include "Inductor.h"
+#include "NameTag.h"
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"

@@ -99,6 +99,9 @@
     <ClCompile Include="Resistor.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="NameTag.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig">
@@ -185,6 +188,9 @@
       <Filter>Header Files\components</Filter>
     </ClInclude>
     <ClInclude Include="Resistor.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="NameTag.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>

@@ -164,6 +164,7 @@
     <ClCompile Include="implot\implot_items.cpp" />
     <ClCompile Include="Inductor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NameTag.cpp" />
     <ClCompile Include="Resistor.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Terminal.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="implot\implot_internal.h" />
     <ClInclude Include="Inductor.h" />
     <ClInclude Include="math_helper.h" />
+    <ClInclude Include="NameTag.h" />
     <ClInclude Include="Resistor.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="Terminal.h" />

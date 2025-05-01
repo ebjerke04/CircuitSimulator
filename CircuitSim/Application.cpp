@@ -170,6 +170,15 @@ void Application::drawMenuBar()
                 }
                 ImGui::EndMenu();
             }
+
+            if (ImGui::BeginMenu("Information"))
+            {
+                if (ImGui::MenuItem("Wire Name Tag"))
+                {
+                    circuit.PushComponent(std::make_unique<NameTag>(ImVec2(40.0f, 40.0f), circuit));
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Simulate"))

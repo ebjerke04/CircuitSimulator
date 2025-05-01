@@ -1,6 +1,7 @@
 #include "Wire.h"
 
 #include <math.h>
+#include "NameTag.h"
 
 Wire::Wire() {}
 
@@ -75,6 +76,13 @@ const std::string Wire::GetName() const
     std::string name = "";
     for (const std::shared_ptr<Terminal>& connectedTerminal : m_ConnectedTerminals)
     {
+        if (dynamic_cast<NameTag*>(connectedTerminal->GetComponent()))
+        {
+            NameTag* wire_tag = static_cast<NameTag*>(connectedTerminal->GetComponent());
+            name = wire_tag->GetTagText();
+            break;
+        }
+
         name += connectedTerminal->GetName();
         if (connectedTerminal == m_ConnectedTerminals.back())
         {

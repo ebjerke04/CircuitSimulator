@@ -12,6 +12,7 @@ class VoltageSource_DC;
 class Resistor;
 class Capacitor;
 class Inductor;
+class NameTag;
 
 class Component
 {
@@ -64,6 +65,10 @@ inline std::string Component::GetComponentLetter()
 	else if (std::is_same<T, Capacitor>::value)
 	{
 		return "C";
+	}
+	else if (std::is_same<T, NameTag>::value)
+	{
+		return "T";
 	}
 	return "err";
 }
